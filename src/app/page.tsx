@@ -42,7 +42,7 @@ export default function Home() {
         <JsonLd data={faqJsonLd([...faqs])} />
         <section
           id="hero"
-          className="snap-block flex min-h-svh flex-col overflow-y-visible bg-chocolate max-lg:overflow-x-visible lg:min-h-dvh lg:overflow-x-clip"
+          className="snap-block flex min-h-svh flex-col overflow-y-visible bg-chocolate max-lg:overflow-x-visible lg:min-h-[var(--screen)] lg:overflow-x-clip"
         >
           {/* In-flow header space, inside the snap so the first screen is exactly one viewport */}
           <div

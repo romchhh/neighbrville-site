@@ -243,8 +243,8 @@ function JoinSectionInner() {
   return (
     <section
       id="join"
-      className={`snap-block join-section relative w-full overflow-hidden text-cream [--u:calc(min(100cqw,480px)/240)] [container-type:inline-size] lg:[--u:calc(100cqw/1157)] ${
-        expanded ? "join-section--open" : ""
+      className={`snap-block join-section relative w-full text-cream [--u:calc(min(100cqw,480px)/240)] [container-type:inline-size] lg:[--u:calc(100cqw/1157)] ${
+        expanded ? "join-section--open overflow-hidden" : "overflow-hidden"
       }`}
     >
       {/*
@@ -271,7 +271,7 @@ function JoinSectionInner() {
       <div className="relative z-10 mx-auto w-full max-w-[480px] lg:max-w-none">
         {/* ───────── First screen ───────── */}
         <div className="relative h-[calc(511*var(--u))] lg:h-[calc(650*var(--u))]">
-          <h2 className="absolute left-[calc(14*var(--u))] top-[calc(38*var(--u))] whitespace-nowrap font-playfair font-normal uppercase leading-[0.92] tracking-[-0.045em] text-[length:calc(22*var(--u))] lg:left-[calc(32*var(--u))] lg:top-[calc(32*var(--u))] lg:leading-[0.94] lg:text-[length:calc(47*var(--u))]">
+          <h2 className="absolute left-[calc(14*var(--u))] top-[calc(38*var(--u))] whitespace-nowrap font-playfair font-normal uppercase leading-[0.92] tracking-[-0.045em] text-[length:calc(22*var(--u))] lg:left-[calc(32*var(--u))] lg:top-[calc(32*var(--u))] lg:leading-[0.9] lg:text-[length:var(--section-title)]">
             Be here <span className="italic">from</span>{" "}
             <br className="lg:hidden" />
             the <span className="italic">beginning</span>
@@ -294,10 +294,10 @@ function JoinSectionInner() {
                 ))}
               </ul>
               <p className={cardDesc}>
-                I want to discover new experiences,
+                Want to discover new experiences,
                 <span className="max-lg:hidden"> my</span>
                 <br />
-                <span className="lg:hidden">my </span>people, my neighborhood
+                <span className="lg:hidden">my </span>people, my neighborhood?
               </p>
               <button
                 type="button"
@@ -320,9 +320,9 @@ function JoinSectionInner() {
                 ))}
               </ul>
               <p className={cardDesc}>
-                I want to contribute events, spaces,
+                Want to contribute events, spaces,
                 <br />
-                programs, resources, or ideas
+                programs, resources, or ideas?
               </p>
               <button
                 type="button"
@@ -335,7 +335,7 @@ function JoinSectionInner() {
             </article>
           </div>
 
-          <h2 className="absolute right-[calc(27*var(--u))] top-[calc(511*var(--u))] z-20 hidden whitespace-nowrap text-right font-playfair font-normal uppercase leading-[0.94] tracking-[-0.045em] text-[length:calc(47*var(--u))] lg:block">
+          <h2 className="absolute right-[calc(27*var(--u))] top-[calc(511*var(--u))] z-20 hidden whitespace-nowrap text-right font-playfair font-normal uppercase leading-[0.9] tracking-[-0.045em] text-[length:var(--section-title)] lg:block">
             Help <span className="italic">bring</span> NeighbrVille
             <br />
             to <span className="italic">your city</span>
@@ -367,10 +367,10 @@ function JoinSectionInner() {
               ) : null}
 
               {copy && step === "waitlist" ? (
-                <div className="join-step-enter grid min-h-dvh grid-cols-1 lg:min-h-screen lg:grid-cols-2 lg:items-stretch">
+                <div className="join-step-enter grid min-h-dvh grid-cols-1 lg:min-h-[var(--screen)] lg:grid-cols-2 lg:items-stretch">
                   {/* Left — full-height cream like Value section */}
-                  <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:min-h-screen lg:px-10 lg:py-16 xl:px-14 xl:py-20">
-                    <h3 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2.1rem,4.5vw,64px)] lg:leading-[0.9]">
+                  <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:min-h-[var(--screen)] lg:px-14 lg:py-20">
+                    <h3 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[length:var(--section-title)] lg:leading-[0.9]">
                       {copy.title}
                     </h3>
 
@@ -394,11 +394,11 @@ function JoinSectionInner() {
                   </div>
 
                   {/* Right — form over photo, full height */}
-                  <div className="relative flex min-h-[42svh] items-center justify-center px-[calc(14*var(--u))] py-[calc(28*var(--u))] lg:min-h-screen lg:px-10 lg:py-16 xl:px-14 xl:py-20">
+                  <div className="relative flex min-h-[42svh] items-center justify-center px-[calc(14*var(--u))] py-[calc(28*var(--u))] lg:min-h-[var(--screen)] lg:px-14 lg:py-20">
                     <form
                       id="join-waitlist-form"
                       onSubmit={onWaitlistSubmit}
-                      className="relative flex w-full max-w-[420px] flex-col bg-cream px-[calc(12*var(--u))] pb-[calc(22*var(--u))] pt-[calc(16*var(--u))] text-chocolate lg:max-w-none lg:px-10 lg:pb-12 lg:pt-10 xl:px-12"
+                      className="relative flex w-full max-w-[420px] flex-col bg-cream px-[calc(12*var(--u))] pb-[calc(22*var(--u))] pt-[calc(16*var(--u))] text-chocolate lg:max-w-none lg:px-12 lg:pb-12 lg:pt-10"
                     >
                       <Field
                         id={nameId}
@@ -437,7 +437,7 @@ function JoinSectionInner() {
                       <div className="mt-[calc(25*var(--u))] flex items-center justify-between gap-4 lg:mt-12">
                         <button
                           type="submit"
-                          className="text-left font-playfair italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[5px] transition-opacity hover:opacity-80 text-[length:calc(15.5*var(--u))] lg:underline-offset-[6px] lg:text-[clamp(1.35rem,2vw,1.75rem)]"
+                          className="text-left font-playfair italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[5px] transition-opacity hover:opacity-80 text-[length:calc(15.5*var(--u))] lg:underline-offset-[6px] lg:text-[clamp(1.35rem,calc(2*var(--dvw)),1.75rem)]"
                         >
                           Join the waitlist
                         </button>

@@ -9,9 +9,17 @@
 }
 
 :root {
+  /* 1 at every width. Desktop overrides this and scales the 1440 composition. */
+  --page-scale: 1;
+  --screen: 100dvh;
+  /* 1vw of the 1440 design. Desktop locks it so type doesn't scale twice. */
+  --dvw: 1vw;
   /* Matches Community side-photo inset (left ~1.2% of frame) */
   --page-gutter-x: clamp(1.25rem, 1.2vw, 1.75rem);
   --page-max: 1440px;
+  /* Section titles share one size. The hero stays larger, but still clears the side lines. */
+  --section-title: 64px;
+  --hero-title: 68px;
   --header-top-inset: 10px;
   /* Fixed header: logo row + vertical padding + top inset */
   --header-space: calc(4rem + var(--header-top-inset));
@@ -38,9 +46,18 @@
 
 @media (min-width: 1024px) {
   :root {
+    /* The Mac layout is the 1440px composition. Zoom paints it at the real viewport
+       so type, cards, photos and spacing stay in the same proportion. */
+    --page-scale: calc(100vw / 1440px);
+    --screen: calc(100dvh / var(--page-scale));
+    --dvw: 14.4px;
+    --page-gutter-x: 1.25rem;
     --header-space: calc(3rem + var(--header-top-inset));
-    --join-first-height: 100dvh;
-    --join-photo-height: calc(var(--join-first-height) + 220dvh);
+    --join-first-height: var(--screen);
+    --join-panel-height: var(--screen);
+    --join-panel-lift: calc(clamp(1.25rem, 4vh, 2.75rem) / var(--page-scale));
+    --join-photo-height: calc(var(--join-first-height) + 220dvh / var(--page-scale));
+    zoom: var(--page-scale);
   }
 }
 
@@ -64,10 +81,12 @@
   min-height: var(--join-panel-height);
 }
 
-/* Mobile profile/thank-you: grow with content; photo still covers via --join-photo-height */
+/* Mobile: open form must grow the section in document flow so it never
+   paints over FAQ. Fixed min-height − lift was shorter than real content. */
 @media (max-width: 1023px) {
-  .join-section--open {
-    overflow: visible;
+  .join-section.join-section--open {
+    min-height: auto;
+    overflow: hidden;
   }
 
   .join-expanded-panel.join-panel-fluid {
@@ -178,9 +197,9 @@ footer .font-playfair {
 
 @media (min-width: 1024px) {
   .experience-marquee-band {
-    padding-block: clamp(0.875rem, 1.8vh, 1.375rem);
-    margin-block-start: clamp(2rem, 5vh, 3.25rem);
-    margin-block-end: clamp(1.75rem, 3.5vh, 2.75rem);
+    padding-block: calc(clamp(0.875rem, 1.8vh, 1.375rem) / var(--page-scale));
+    margin-block-start: calc(clamp(2rem, 5vh, 3.25rem) / var(--page-scale));
+    margin-block-end: calc(clamp(1.75rem, 3.5vh, 2.75rem) / var(--page-scale));
   }
 }
 

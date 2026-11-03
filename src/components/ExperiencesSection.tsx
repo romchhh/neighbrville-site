@@ -194,7 +194,7 @@ function ExperienceMarquee() {
         {[0, 1].map((copy) => (
           <p
             key={copy}
-            className="experience-marquee-line m-0 flex items-center font-playfair text-[clamp(1.5rem,6.8vw,2.15rem)] not-italic uppercase leading-none tracking-[-0.04em] text-ivory lg:text-[clamp(1.6rem,3.4vw,3.15rem)]"
+            className="experience-marquee-line m-0 flex items-center font-playfair text-[clamp(1.5rem,6.8vw,2.15rem)] not-italic uppercase leading-none tracking-[-0.04em] text-ivory lg:text-[clamp(1.6rem,calc(3.4*var(--dvw)),3.15rem)]"
           >
             {marqueeItems.map((item, index) => (
               <span key={`${copy}-${item}`} className="inline-flex items-center">
@@ -226,7 +226,7 @@ function DesktopStack({
 }) {
   return (
     <div
-      className="absolute left-[45cqw] top-[4.5cqw] aspect-[850/760] w-[54.6cqw]"
+      className="absolute left-[45cqw] top-[4.5cqw] aspect-[850/680] w-[54.6cqw]"
     >
       {cards.map((card, index) => {
         const isActive = activeIndex === index;
@@ -355,7 +355,7 @@ function MobileStack({
               }
             }}
           >
-            <div className="flex flex-col px-[8.5cqw] pb-[6.5cqw] pt-[7.5cqw]">
+            <div className="flex flex-col px-[11cqw] pb-[9cqw] pt-[10cqw]">
               <div className="relative h-[60cqw] w-full shrink-0 overflow-hidden">
                 <Image
                   src={card.image}
@@ -365,13 +365,13 @@ function MobileStack({
                   className="object-cover"
                 />
               </div>
-              <h3 className="mt-[7cqw] font-inter text-[5.6cqw] font-semibold uppercase leading-[1.08] tracking-[-0.02em]">
+              <h3 className="mt-[8cqw] font-inter text-[5.6cqw] font-semibold uppercase leading-[1.08] tracking-[-0.02em]">
                 {card.title}
               </h3>
-              <p className="mt-[1.6cqw] font-inter text-[4.35cqw] leading-[1.22]">
+              <p className="mt-[2cqw] font-inter text-[4.35cqw] leading-[1.22]">
                 {card.meta}
               </p>
-              <span className="mt-[5cqw] self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[3.9cqw] leading-none">
+              <span className="mt-[6cqw] self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[3.9cqw] leading-none">
                 {card.tag}
               </span>
             </div>
@@ -442,7 +442,7 @@ export function ExperiencesSection() {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
       const pinTop = readPinTop();
-      const total = Math.max(section.offsetHeight - vh, 1);
+      const total = Math.max(rect.height - vh, 1);
       const next =
         rect.top > pinTop
           ? 0
@@ -478,7 +478,7 @@ export function ExperiencesSection() {
       id="experiences"
       ref={sectionRef}
       className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:z-20 lg:overflow-x-clip ${
-        reduceMotion ? "snap-block" : "h-[280vh] lg:h-[400vh]"
+        reduceMotion ? "snap-block" : "h-[280vh] lg:h-[calc(400vh/var(--page-scale))]"
       }`}
     >
       {!reduceMotion ? (
@@ -576,8 +576,8 @@ export function ExperiencesSection() {
       <div
         className={
           reduceMotion
-            ? "relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
-            : "sticky top-0 relative hidden h-dvh grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
+            ? "relative hidden h-[var(--screen)] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
+            : "sticky top-0 relative hidden h-[var(--screen)] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
         }
       >
         <p className="absolute left-[50px] top-[88px] z-20 font-inter text-[13px] font-normal uppercase leading-none text-ivory">
@@ -585,64 +585,59 @@ export function ExperiencesSection() {
         </p>
 
         <h2
-          className={`absolute left-[50px] top-[116px] z-20 text-left font-playfair text-[clamp(2rem,3.4vw,52px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] ${headingBase}`}
+          className={`absolute left-[50px] top-[116px] z-20 text-left font-playfair text-[60px] font-normal uppercase leading-[0.9] tracking-[-0.07em] ${headingBase}`}
         >
-              {cards.map((card, index) => {
-                const isActive = activeIndex === index;
-                const isRevealed = index <= scrollIndex;
+          {cards.map((card, index) => {
+            const isActive = activeIndex === index;
+            const isRevealed = index <= scrollIndex;
 
-                return (
-                  <button
-                    key={card.title}
-                    type="button"
-                    disabled={!canSwitchCards}
-                    className={`whitespace-nowrap ${headlineLineClass(
-                      isActive,
-                      isRevealed,
-                      canSwitchCards,
-                    )}`}
-                    onMouseEnter={() => {
-                      if (canSwitchCards) setHovered(index);
-                    }}
-                    onMouseLeave={() => {
-                      if (canSwitchCards) setHovered(null);
-                    }}
-                    onFocus={() => {
-                      if (canSwitchCards) setHovered(index);
-                    }}
-                    onBlur={() => {
-                      if (canSwitchCards) setHovered(null);
-                    }}
-                    onClick={() => {
-                      if (!canSwitchCards) return;
-                      setHovered((current) =>
-                        current === index ? null : index,
-                      );
-                    }}
-                    aria-pressed={isActive}
-                  >
-                    {card.line}
-                  </button>
-                );
-              })}
+            return (
+              <button
+                key={card.title}
+                type="button"
+                disabled={!canSwitchCards}
+                className={`whitespace-nowrap ${headlineLineClass(
+                  isActive,
+                  isRevealed,
+                  canSwitchCards,
+                )}`}
+                onMouseEnter={() => {
+                  if (canSwitchCards) setHovered(index);
+                }}
+                onMouseLeave={() => {
+                  if (canSwitchCards) setHovered(null);
+                }}
+                onFocus={() => {
+                  if (canSwitchCards) setHovered(index);
+                }}
+                onBlur={() => {
+                  if (canSwitchCards) setHovered(null);
+                }}
+                onClick={() => {
+                  if (!canSwitchCards) return;
+                  setHovered((current) => (current === index ? null : index));
+                }}
+                aria-pressed={isActive}
+              >
+                {card.line}
+              </button>
+            );
+          })}
         </h2>
 
-        <div className="page-shell relative z-0 w-full self-start overflow-visible pb-[clamp(2rem,5vh,3.5rem)] [container-type:inline-size]">
-          <div
-            className="relative"
-            style={{ height: "max(56.4cqw, 640px)" }}
-          >
+        <div className="page-shell relative z-0 w-full self-start overflow-visible pb-[calc(clamp(2rem,5vh,3.5rem)/var(--page-scale))] [container-type:inline-size]">
+          <div className="relative" style={{ height: "max(50.5cqw, 580px)" }}>
             <DesktopStack
               progress={motionProgress}
               activeIndex={activeIndex}
               canSwitchCards={canSwitchCards}
               onHover={setHovered}
             />
-            <div className="absolute bottom-4 left-[50px] z-20">
-              <p className="font-inter text-[15px] font-normal leading-[1.2] text-ivory">
-                Language is part of the experience
-                <br />
-                Practice while doing something you enjoy
+            <div className="absolute bottom-6 left-[50px] z-20">
+              <p className="max-w-[28rem] font-inter text-[15px] font-normal leading-[1.2] text-ivory">
+                Discover events in different languages, practice a new language,
+                explore another culture, and learn through experience — all
+                without leaving your city
               </p>
               <Link
                 href="/?as=neighbr#join"

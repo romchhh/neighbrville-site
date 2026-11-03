@@ -4,7 +4,7 @@ export function ValueSection() {
   return (
     <section
       id="about"
-      className="snap-block grid min-h-svh grid-cols-1 overflow-x-clip lg:min-h-screen lg:grid-cols-2 lg:items-stretch"
+      className="snap-block grid min-h-svh grid-cols-1 overflow-x-clip lg:min-h-[var(--screen)] lg:grid-cols-2 lg:items-stretch"
     >
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
         <Image
@@ -17,8 +17,8 @@ export function ValueSection() {
         />
       </div>
 
-      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-screen lg:px-[50px] lg:py-[50px]">
-        <h2 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[clamp(2.1rem,4.5vw,64px)] lg:leading-[0.9]">
+      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-[var(--screen)] lg:px-[50px] lg:py-[50px]">
+        <h2 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[length:var(--section-title)] lg:leading-[0.9]">
           <span className="block lg:hidden">
             A <span className="italic">city</span> can feel like a
           </span>
@@ -34,7 +34,7 @@ export function ValueSection() {
         </h2>
 
         <div
-          className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase tracking-[0.06em] text-chocolate sm:gap-2 sm:tracking-[0.07em] lg:gap-3 lg:text-[13px] lg:tracking-[0.08em]"
+          className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase tracking-[0.06em] text-chocolate sm:gap-2 sm:tracking-[0.07em] lg:gap-3 lg:pr-10 lg:text-[13px] lg:tracking-[0.08em]"
         >
           <span className="shrink-0 whitespace-nowrap">Shared interests</span>
           <span className="shrink-0" aria-hidden>/</span>
@@ -49,10 +49,11 @@ export function ValueSection() {
         </p>
 
         <p className="relative z-10 hidden max-w-[36rem] shrink-0 font-inter text-[14px] leading-[1.22] text-chocolate lg:block lg:text-[15px]">
-          We live closer together than ever, yet many of us feel more
-          disconnected than before. NeighbrVille helps you get involved, connect
-          and belong - right where you live. One shared experience can make a
-          neighborhood feel like a community!
+          NeighbrVille is a platform for discovering everything your local
+          community has to offer. From creative workshops and hobby groups to
+          cultural events and grassroots initiatives, find things to do, people
+          to meet and organizations to discover. Explore your interests, get
+          involved and be part of what makes your neighborhood unique.
         </p>
       </div>
     </section>

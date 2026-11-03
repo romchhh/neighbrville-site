@@ -71,7 +71,7 @@ export function Header() {
           </Link>
 
           <nav
-            className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-8 md:flex xl:gap-10"
+            className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-8 md:flex lg:gap-10"
             aria-label="Main navigation"
           >
             {navLinks.map((link) => (

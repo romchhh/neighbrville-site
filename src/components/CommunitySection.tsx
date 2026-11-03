@@ -111,11 +111,11 @@ export function CommunitySection() {
           ))}
 
           <div className="pointer-events-none absolute inset-x-[10%] top-[32.4%] z-10 text-center">
-            <p className="font-inter text-[11px] font-normal uppercase tracking-[0.24em] text-ivory xl:text-[12px]">
+            <p className="font-inter text-[12px] font-normal uppercase tracking-[0.24em] text-ivory">
               Built by the neighborhood
             </p>
 
-            <h2 className="mx-auto mt-6 max-w-[1000px] font-playfair text-[clamp(2.1rem,4.5vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em]">
+            <h2 className="mx-auto mt-6 max-w-[1000px] font-playfair text-[length:var(--section-title)] font-normal uppercase leading-[0.9] tracking-[-0.045em]">
               <span className="block whitespace-nowrap">
                 Everything your <span className="italic font-normal">community</span>
               </span>
@@ -125,11 +125,11 @@ export function CommunitySection() {
               </span>
             </h2>
 
-            <p className="mt-7 whitespace-nowrap font-inter text-[12px] font-normal uppercase tracking-[0.06em] text-ivory xl:text-[13px]">
+            <p className="mt-7 whitespace-nowrap font-inter text-[13px] font-normal uppercase tracking-[0.06em] text-ivory">
               You offer events, spaces, programs, or something else entirely?
             </p>
 
-            <p className="mx-auto mt-1 max-w-[470px] font-inter text-[13px] font-normal leading-[1.35] text-ivory xl:text-[14px]">
+            <p className="mx-auto mt-1 max-w-[470px] font-inter text-[14px] font-normal leading-[1.35] text-ivory">
               NeighbrVille helps more people discover it! Whether you host events
               or contribute to your local life in broader ways, you belong here
             </p>
@@ -140,7 +140,7 @@ export function CommunitySection() {
             onClick={() => {
               document.documentElement.classList.add("join-open");
             }}
-            className="absolute bottom-[9.4%] left-1/2 z-30 -translate-x-1/2 font-playfair text-[clamp(1.35rem,1.7vw,1.85rem)] font-normal italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px] transition-opacity hover:opacity-80"
+            className="absolute bottom-[9.4%] left-1/2 z-30 -translate-x-1/2 font-playfair text-[clamp(1.35rem,calc(1.7*var(--dvw)),1.85rem)] font-normal italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[7px] transition-opacity hover:opacity-80"
           >
             Become a partner
           </Link>

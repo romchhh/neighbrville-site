@@ -133,7 +133,7 @@ export function Hero() {
       {/* ───────────── Mobile ───────────── */}
       {/* Header space already lives in #hero — keep only a tight top gap here
           so the whole composition fits one svh. */}
-      <div className="page-x flex min-h-0 flex-1 flex-col justify-between overflow-visible pb-6 pt-[5.5rem] lg:hidden">
+      <div className="page-x flex min-h-0 flex-1 flex-col justify-between overflow-visible pb-6 pt-2 lg:hidden">
         <div className="page-shell flex min-h-0 flex-1 flex-col justify-between overflow-visible">
           {/* Headline + photos share one flex slot so justify-between
               can't stretch the gap between them. */}
@@ -142,9 +142,9 @@ export function Hero() {
               <span className="block whitespace-nowrap">
                 Become an <span className="italic">active</span>
               </span>
-              <span className="flex items-end justify-start gap-1.5">
+              <span className="flex items-end justify-between gap-2">
                 <span>participant</span>
-                <span className="mb-[0.38em] shrink-0 font-inter text-[11px] font-normal normal-case leading-[1.1] tracking-[0.01em] text-ivory">
+                <span className="mb-[0.38em] shrink-0 text-right font-inter text-[11px] font-normal normal-case leading-[1.1] tracking-[0.01em] text-ivory">
                   Launching Early 2027
                 </span>
               </span>
@@ -200,7 +200,7 @@ export function Hero() {
             </p>
           </div>
 
-          <div className="mt-1.5 flex shrink-0 flex-col items-center">
+          <div className="mt-auto flex shrink-0 flex-col items-center pt-6">
             <p className="w-full max-w-[36ch] text-center font-inter text-[14px] leading-[1.26] text-ivory">
               Your neighborhood is full of places, people,
               <br />
@@ -230,14 +230,14 @@ export function Hero() {
 
       {/* ───────────── Desktop ───────────── */}
       <div className="relative hidden min-h-0 w-full flex-1 lg:block">
-        <div className="absolute inset-0 px-[50px] [--pw:clamp(178px,14.4vw,244px)]">
-            <p className="absolute left-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[14px] leading-[1.28] text-ivory xl:text-[15px]">
+        <div className="absolute inset-0 px-[50px] [--pw:clamp(178px,calc(14.4*var(--dvw)),244px)]">
+            <p className="absolute left-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[15px] leading-[1.28] text-ivory">
               Your neighborhood is full of places,
               <br />
               people, and initiatives to discover
             </p>
 
-            <h1 className="absolute left-1/2 top-[22%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-playfair text-[clamp(2.85rem,4.7vw,84px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] text-cream">
+            <h1 className="absolute left-1/2 top-[22%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center font-playfair text-[length:var(--hero-title)] font-normal uppercase leading-[0.9] tracking-[-0.07em] text-cream">
               <span className="block">
                 Become an <span className="italic">active</span>
               </span>
@@ -247,7 +247,7 @@ export function Hero() {
               <span className="block italic">community</span>
             </h1>
 
-            <p className="absolute right-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[14px] leading-[1.28] text-ivory xl:text-[15px]">
+            <p className="absolute right-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[15px] leading-[1.28] text-ivory">
               NeighbrVille helps you find them,
               <br />
               connect, and build community

@@ -329,7 +329,7 @@ function ProfileShell({
 }) {
   return (
     <div className="join-profile-shell relative box-border flex w-full flex-col gap-5 max-lg:pt-[var(--join-mobile-panel-top)] lg:grid lg:min-h-[var(--join-panel-height)] lg:grid-cols-2 lg:gap-0 lg:pt-0">
-      <div className="page-x relative z-10 flex w-full flex-col bg-cream py-8 pb-8 pt-7 text-chocolate sm:pb-9 sm:pt-8 lg:px-10 lg:py-10 xl:px-14 xl:py-12">
+      <div className="page-x relative z-10 flex w-full flex-col bg-cream py-8 pb-8 pt-7 text-chocolate sm:pb-9 sm:pt-8 lg:px-14 lg:py-12">
         <button
           type="button"
           onClick={onBack}
@@ -338,7 +338,7 @@ function ProfileShell({
           ← Go back
         </button>
 
-        <h3 className="mt-10 max-w-[12ch] font-playfair text-[clamp(2.2rem,9.5vw,3.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.05em] lg:mt-12 lg:text-[clamp(2.4rem,3.8vw,3.75rem)]">
+        <h3 className="mt-10 max-w-[12ch] font-playfair text-[clamp(2.2rem,9.5vw,3.75rem)] font-normal uppercase leading-[0.88] tracking-[-0.05em] lg:mt-12 lg:text-[clamp(2.4rem,calc(3.8*var(--dvw)),3.75rem)]">
           {title}
         </h3>
 
@@ -365,7 +365,7 @@ function ProfileShell({
             <button
               type="button"
               onClick={onInvite}
-              className="mt-4 text-left font-playfair text-[clamp(1.55rem,5.5vw,2rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 lg:text-[clamp(1.65rem,2.1vw,2.15rem)]"
+              className="mt-4 text-left font-playfair text-[clamp(1.55rem,5.5vw,2rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 lg:text-[clamp(1.65rem,calc(2.1*var(--dvw)),2.15rem)]"
             >
               {inviteCta}
             </button>
@@ -373,7 +373,7 @@ function ProfileShell({
         </div>
       </div>
 
-      <div className="relative flex w-full flex-col justify-start px-[var(--page-gutter-x)] pb-8 pt-2 lg:justify-center lg:px-10 lg:pb-0 lg:pt-0 xl:px-14">
+      <div className="relative flex w-full flex-col justify-start px-[var(--page-gutter-x)] pb-8 pt-2 lg:justify-center lg:px-14 lg:pb-0 lg:pt-0">
         {children}
       </div>
     </div>
@@ -454,7 +454,7 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
       >
         <div
           id="join-profile-done"
-          className="relative z-10 w-full max-w-[560px] bg-cream px-6 py-9 text-chocolate sm:px-8 sm:py-10 xl:px-10 xl:py-12"
+          className="relative z-10 w-full max-w-[560px] bg-cream px-6 py-9 text-chocolate sm:px-8 sm:py-10 lg:px-10 lg:py-12"
         >
           <h3 className="max-w-[14ch] font-playfair text-[clamp(1.85rem,6.5vw,2.4rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em]">
             Profile <span className="italic">complete</span>
@@ -489,14 +489,14 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
       inviteCta={copy.inviteCta}
       onInvite={() => shareJoinInvite(role)}
     >
-      <h3 className="mb-6 max-w-[16ch] font-playfair text-[clamp(1.9rem,7.5vw,2.85rem)] font-normal uppercase leading-[0.9] tracking-[-0.045em] text-cream lg:mb-7 lg:max-w-[15ch] lg:text-[clamp(2rem,2.7vw,2.85rem)]">
+      <h3 className="mb-6 max-w-[16ch] font-playfair text-[clamp(1.9rem,7.5vw,2.85rem)] font-normal uppercase leading-[0.9] tracking-[-0.045em] text-cream lg:mb-7 lg:max-w-[15ch] lg:text-[clamp(2rem,calc(2.7*var(--dvw)),2.85rem)]">
         {copy.rightTitle}
       </h3>
 
       <form
         id="join-profile-form"
         onSubmit={onSubmit}
-        className="join-step-enter relative z-10 flex w-full max-w-[560px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 xl:px-10 xl:py-11"
+        className="join-step-enter relative z-10 flex w-full max-w-[560px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 lg:px-10 lg:py-11"
       >
         {copy.fields === "neighbr" ? (
           <div className="space-y-8 sm:space-y-9">
@@ -571,7 +571,7 @@ export function JoinProfileStep({ role, onBack }: JoinProfileStepProps) {
         <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <button
             type="submit"
-            className="text-left font-playfair text-[clamp(1.5rem,6vw,1.95rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 lg:text-[clamp(1.55rem,2.2vw,2.15rem)]"
+            className="text-left font-playfair text-[clamp(1.5rem,6vw,1.95rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 lg:text-[clamp(1.55rem,calc(2.2*var(--dvw)),2.15rem)]"
           >
             Complete my profile
           </button>
