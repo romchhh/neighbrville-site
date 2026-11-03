@@ -32,7 +32,7 @@ export default function Home() {
       {/* Outside overflow-clip so position:fixed stays viewport-bound site-wide */}
       <Header />
       <MobileSectionSnap />
-      <main className="overflow-x-clip">
+      <main id="main-content" className="overflow-x-clip">
         <a
           href="#about"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-cream focus:px-4 focus:py-2 focus:text-chocolate"

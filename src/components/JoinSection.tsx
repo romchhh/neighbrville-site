@@ -151,20 +151,13 @@ function JoinSectionInner() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
-  const didScrollWaitlistRef = useRef(false);
+  const scrollTicketRef = useRef(0);
   const nameId = useId();
   const emailId = useId();
   const expanded = role !== null;
   const copy = role ? formCopy[role] : null;
-
-  // Deep-link: /?as=neighbr#join or /?as=partner#join
-  useEffect(() => {
-    const as = searchParams.get("as");
-    if (as !== "neighbr" && as !== "partner") return;
-    setRole(as);
-    setStep("waitlist");
-  }, [searchParams]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("join-open", expanded);
@@ -202,48 +195,123 @@ function JoinSectionInner() {
     };
   }, [expanded]);
 
-  useEffect(() => {
-    if (!expanded) {
-      didScrollWaitlistRef.current = false;
-      return;
-    }
-    if (!role || step !== "waitlist" || didScrollWaitlistRef.current) return;
-    didScrollWaitlistRef.current = true;
-    const timer = window.setTimeout(() => {
-      scrollToJoinPanel(panelRef.current, {
-        align: "nearest",
-        behavior: "smooth",
-      });
-    }, 420);
-    return () => window.clearTimeout(timer);
-  }, [expanded, role, step]);
-
-  function openForm(next: JoinRole) {
-    setRole((current) => {
-      if (current === next) {
-        setStep("waitlist");
-        return null;
-      }
-      setStep("waitlist");
-      setEmailError(null);
-      return next;
+  function scrollFormIntoView(behavior: ScrollBehavior) {
+    const target =
+      document.getElementById("join-waitlist-form") ?? panelRef.current;
+    scrollToJoinPanel(target, {
+      align: "form",
+      behavior,
     });
   }
 
+  function scheduleScrollToForm(openingFresh: boolean, switchingRole: boolean) {
+    scrollTicketRef.current += 1;
+    const ticket = scrollTicketRef.current;
+
+    const scroll = (behavior: ScrollBehavior) => {
+      if (ticket !== scrollTicketRef.current) return;
+      scrollFormIntoView(behavior);
+    };
+
+    if (!openingFresh && !switchingRole) {
+      window.setTimeout(() => scroll("smooth"), 100);
+      window.setTimeout(() => scroll("auto"), 220);
+      return;
+    }
+
+    let settled = false;
+    const settle = () => {
+      if (settled || ticket !== scrollTicketRef.current) return;
+      settled = true;
+      scroll("smooth");
+      window.setTimeout(() => scroll("auto"), 150);
+    };
+
+    const expandPanel = document.querySelector<HTMLElement>(".join-panel-expand");
+    expandPanel?.addEventListener("transitionend", settle, { once: true });
+    window.setTimeout(settle, 720);
+  }
+
+  function openForm(next: JoinRole) {
+    const openingFresh = role === null;
+    const switchingRole = role !== null && role !== next;
+
+    if (role !== next) {
+      setEmailError(null);
+    }
+    setStep("waitlist");
+    setRole(next);
+    scheduleScrollToForm(openingFresh, switchingRole);
+    void import("@/lib/analytics/track").then(({ track }) => {
+      track("join_open", { value: next });
+    });
+  }
+
+  // Deep-link: /?as=neighbr#join or /?as=partner#join
+  useEffect(() => {
+    const as = searchParams.get("as");
+    if (as !== "neighbr" && as !== "partner") return;
+    setRole(as);
+    setStep("waitlist");
+    scheduleScrollToForm(true, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on ?as= deep link
+  }, [searchParams]);
+
   function onWaitlistSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setEmailError(null);
+      return;
+    }
     if (!isValidEmail(email)) {
       setEmailError("Please enter a valid email address.");
       return;
     }
+    if (!role) return;
+
+    setWaitlistSubmitting(true);
     setEmailError(null);
-    setStep("profile");
+
+    void (async () => {
+      try {
+        const response = await fetch("/api/join/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: trimmedName,
+            email,
+            role,
+          }),
+        });
+        const data = (await response.json()) as { error?: string };
+
+        if (response.status === 409) {
+          setEmailError(
+            data.error ??
+              "This email is already registered. Check your inbox for the edit link.",
+          );
+          return;
+        }
+        if (!response.ok) {
+          setEmailError(
+            data.error ?? "Could not join the waitlist. Please try again.",
+          );
+          return;
+        }
+        setStep("profile");
+      } catch {
+        setEmailError("Could not join the waitlist. Please try again.");
+      } finally {
+        setWaitlistSubmitting(false);
+      }
+    })();
   }
 
   return (
     <section
       id="join"
-      className={`snap-block join-section relative w-full text-cream [--u:calc(min(100cqw,480px)/240)] [container-type:inline-size] lg:[--u:calc(100cqw/1157)] ${
+      className={`snap-block join-section relative z-20 w-full text-cream [--u:calc(min(100cqw,480px)/240)] [container-type:inline-size] lg:[--u:calc(100cqw/1157)] ${
         expanded ? "join-section--open overflow-hidden" : "overflow-hidden"
       }`}
     >
@@ -362,6 +430,8 @@ function JoinSectionInner() {
                 <JoinProfileStep
                   key={role}
                   role={role}
+                  name={name}
+                  email={email.trim().toLowerCase()}
                   onBack={() => setStep("waitlist")}
                 />
               ) : null}
@@ -374,7 +444,7 @@ function JoinSectionInner() {
                       {copy.title}
                     </h3>
 
-                    <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-2 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase tracking-[0.06em] text-chocolate sm:tracking-[0.07em] lg:gap-3 lg:text-[13px] lg:tracking-[0.08em]">
+                    <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-2 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase tracking-[0.02em] text-chocolate sm:tracking-[0.03em] lg:gap-3 lg:text-[13px] lg:tracking-[0.03em]">
                       <span className="shrink-0 whitespace-nowrap">
                         {copy.footer[0]}
                       </span>
@@ -398,7 +468,7 @@ function JoinSectionInner() {
                     <form
                       id="join-waitlist-form"
                       onSubmit={onWaitlistSubmit}
-                      className="relative flex w-full max-w-[420px] flex-col bg-cream px-[calc(12*var(--u))] pb-[calc(22*var(--u))] pt-[calc(16*var(--u))] text-chocolate lg:max-w-none lg:px-12 lg:pb-12 lg:pt-10"
+                      className="relative flex w-full max-w-[420px] scroll-mt-[calc(var(--header-space)+1rem)] flex-col bg-cream px-[calc(12*var(--u))] pb-[calc(22*var(--u))] pt-[calc(16*var(--u))] text-chocolate lg:max-w-none lg:scroll-mt-[calc(var(--header-space)+1.5rem)] lg:px-12 lg:pb-12 lg:pt-10"
                     >
                       <Field
                         id={nameId}
@@ -437,9 +507,10 @@ function JoinSectionInner() {
                       <div className="mt-[calc(25*var(--u))] flex items-center justify-between gap-4 lg:mt-12">
                         <button
                           type="submit"
-                          className="text-left font-playfair italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[5px] transition-opacity hover:opacity-80 text-[length:calc(15.5*var(--u))] lg:underline-offset-[6px] lg:text-[clamp(1.35rem,calc(2*var(--dvw)),1.75rem)]"
+                          disabled={waitlistSubmitting}
+                          className="text-left font-playfair italic uppercase leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[5px] transition-opacity hover:opacity-80 disabled:opacity-50 text-[length:calc(15.5*var(--u))] lg:underline-offset-[6px] lg:text-[clamp(1.35rem,calc(2*var(--dvw)),1.75rem)]"
                         >
-                          Join the waitlist
+                          {waitlistSubmitting ? "Joining…" : "Join the waitlist"}
                         </button>
                         <p className="hidden text-right font-inter text-[13px] leading-[1.26] text-chocolate/70 lg:block lg:text-[14px]">
                           {NOTE[0]}

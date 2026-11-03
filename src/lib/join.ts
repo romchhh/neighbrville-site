@@ -43,25 +43,40 @@ export function shareJoinInvite(role: JoinRole) {
   }
 }
 
-/** Scroll a join target into view; prefer `nearest` while typing in forms. */
+function readScrollInset(node: HTMLElement) {
+  const root = getComputedStyle(document.documentElement);
+  const nodeStyle = getComputedStyle(node);
+
+  const paddingTop = Number.parseFloat(root.scrollPaddingTop);
+  const marginTop = Number.parseFloat(nodeStyle.scrollMarginTop);
+
+  return {
+    paddingTop: Number.isFinite(paddingTop) ? paddingTop : 0,
+    marginTop: Number.isFinite(marginTop) ? marginTop : 0,
+  };
+}
+
+/** Scroll a join target into view with header / scroll-margin aware alignment. */
 export function scrollToJoinPanel(
   node: HTMLElement | null,
   options?: {
     focus?: boolean;
-    align?: "panel-top" | "nearest";
+    align?: "form" | "panel-top" | "nearest";
     behavior?: ScrollBehavior;
   },
 ) {
   if (!node) return;
 
-  const align = options?.align ?? "panel-top";
+  const align = options?.align ?? "form";
   const behavior = options?.behavior ?? "smooth";
 
-  requestAnimationFrame(() => {
+  const run = () => {
     if (align === "nearest") {
       node.scrollIntoView({ block: "nearest", behavior });
     } else {
-      const top = node.getBoundingClientRect().top + window.scrollY;
+      const { paddingTop, marginTop } = readScrollInset(node);
+      const rect = node.getBoundingClientRect();
+      const top = rect.top + window.scrollY - paddingTop - marginTop;
       window.scrollTo({ top: Math.max(0, top), behavior });
     }
 
@@ -71,5 +86,9 @@ export function scrollToJoinPanel(
       'input:not([type="hidden"]), textarea, select, button[type="submit"]',
     );
     focusable?.focus({ preventScroll: true });
+  };
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(run);
   });
 }

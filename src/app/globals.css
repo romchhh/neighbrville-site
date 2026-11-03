@@ -99,6 +99,7 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--color-cream);
   /* Mobile snap is handled in JS so tall sections and the URL bar don't fight it */
   scroll-snap-type: none;
 }
@@ -113,7 +114,8 @@ html {
   html.join-open,
   html.join-focus,
   html.menu-open,
-  html.faq-open {
+  html.faq-open,
+  html.no-snap {
     scroll-snap-type: none;
   }
 
@@ -129,10 +131,19 @@ html {
     scroll-snap-stop: always;
   }
 
-  /* Last block: snap to bottom edge; extra scroll padding keeps wordmark off the chrome */
+  /* Let scroll continue past FAQ into the footer (final snap). */
+  #faq.snap-block {
+    scroll-snap-stop: normal;
+  }
+
   footer.snap-block {
-    scroll-snap-align: end;
-    scroll-padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  #experiences:not(.snap-block) {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 }
 
@@ -143,8 +154,8 @@ html {
 }
 
 body {
-  background: var(--color-chocolate);
-  color: var(--color-cream);
+  background: var(--color-cream);
+  color: var(--color-chocolate);
   font-family: var(--font-inter), system-ui, sans-serif;
   max-width: 100%;
 }
@@ -175,6 +186,19 @@ footer .font-playfair {
   text-transform: uppercase;
 }
 
+.footer-wordmark-text {
+  display: block;
+  line-height: 1;
+  text-box-edge: cap alphabetic;
+  text-box-trim: trim-end;
+}
+
+@supports not (text-box-trim: trim-end) {
+  .footer-wordmark-text {
+    margin-block-end: -0.1em;
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -192,14 +216,23 @@ footer .font-playfair {
 }
 
 .experience-marquee-band {
-  padding-block: 0.5rem;
+  padding-block: 0.35rem 0;
 }
 
 @media (min-width: 1024px) {
   .experience-marquee-band {
-    padding-block: calc(clamp(0.875rem, 1.8vh, 1.375rem) / var(--page-scale));
-    margin-block-start: calc(clamp(2rem, 5vh, 3.25rem) / var(--page-scale));
-    margin-block-end: calc(clamp(1.75rem, 3.5vh, 2.75rem) / var(--page-scale));
+    align-items: flex-end;
+    margin: 0;
+    padding: 0.35rem 0 0;
+    overflow: visible;
+  }
+
+  .experience-marquee-line {
+    line-height: 1.05;
+    padding-bottom: 0.04em;
+    text-box-edge: auto;
+    text-box-trim: none;
+    transform: none;
   }
 }
 
@@ -245,4 +278,21 @@ footer .font-playfair {
   transition:
     grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.28s ease-out;
+}
+
+@keyframes joinCountBump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.join-count-bump {
+  display: inline-block;
+  animation: joinCountBump 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }

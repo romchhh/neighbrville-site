@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 type Pose = { left: number; top: number; rotate: number };
 
@@ -40,7 +40,7 @@ const cards: ExperienceCard[] = [
         Try a new <em className={headingItalic}>experience</em>,
       </>
     ),
-    desktop: { left: 11.53, top: 4.6, rotate: -3.5 },
+    desktop: { left: 11.53, top: 2.5, rotate: -3.5 },
     mobile: { left: 11, top: 4.5, rotate: -5 },
   },
   {
@@ -59,7 +59,7 @@ const cards: ExperienceCard[] = [
         meet <em className={headingAccentEm}>your</em> neighbors,
       </>
     ),
-    desktop: { left: 12.24, top: 23.02, rotate: 4.1 },
+    desktop: { left: 12.24, top: 15.5, rotate: 4.1 },
     mobile: { left: 17.9, top: 9.5, rotate: 2.5 },
   },
   {
@@ -74,7 +74,7 @@ const cards: ExperienceCard[] = [
         see your <em className={headingAccentEm}>community</em>
       </>
     ),
-    desktop: { left: 4.27, top: 38.44, rotate: -6.4 },
+    desktop: { left: 4.27, top: 26.2, rotate: -6.4 },
     mobile: { left: 21.5, top: 17, rotate: -5.5 },
   },
   {
@@ -85,16 +85,20 @@ const cards: ExperienceCard[] = [
     alt: "Friends walking through a park at sunset",
     line: <em className={headingItalic}>differently</em>,
     mobileLine: <em className={headingItalic}>differently</em>,
-    desktop: { left: 12.14, top: 55.67, rotate: 4.75 },
+    desktop: { left: 12.14, top: 36.8, rotate: 4.75 },
     mobile: { left: 20.4, top: 22.5, rotate: 3 },
   },
 ];
+
+/** One pinned viewport per card; scroll distance = (n − 1) steps between cards. */
+const EXPERIENCE_SCROLL_SCREENS = cards.length;
+const EXPERIENCE_SCROLL_STEPS = cards.length - 1;
 
 const cardShadow = "shadow-[0_14px_34px_rgba(0,0,0,0.4)]";
 const smoothRender =
   "[backface-visibility:hidden] [outline:1px_solid_transparent] will-change-transform";
 const ctaClass =
-  "text-left font-playfair italic uppercase leading-none tracking-[-0.075em] underline decoration-[1px] transition-opacity hover:opacity-80";
+  "text-left font-playfair italic font-normal uppercase leading-none tracking-[-0.075em] underline decoration-[1px] transition-opacity hover:opacity-80";
 
 const marqueeItems = [
   "Libraries",
@@ -187,9 +191,10 @@ function headlineLineClass(
 function ExperienceMarquee() {
   return (
     <div
-      className="experience-marquee-band relative z-10 flex w-full shrink-0 items-center overflow-x-clip overflow-y-hidden bg-chocolate lg:relative lg:z-50"
+      className="experience-marquee-band relative flex w-full shrink-0 items-end bg-chocolate"
       aria-hidden
     >
+      <div className="w-full overflow-x-clip">
       <div className="experience-marquee-track flex w-max animate-marquee items-center whitespace-nowrap will-change-transform">
         {[0, 1].map((copy) => (
           <p
@@ -209,6 +214,7 @@ function ExperienceMarquee() {
           </p>
         ))}
       </div>
+      </div>
     </div>
   );
 }
@@ -226,7 +232,7 @@ function DesktopStack({
 }) {
   return (
     <div
-      className="absolute left-[45cqw] top-[4.5cqw] aspect-[850/680] w-[54.6cqw]"
+      className="absolute left-[45cqw] top-[3cqw] aspect-[850/760] w-[54.6cqw]"
     >
       {cards.map((card, index) => {
         const isActive = activeIndex === index;
@@ -284,11 +290,11 @@ function DesktopStack({
               </p>
             </div>
 
-            <span className="absolute bottom-[2.1cqw] left-[3.6cqw] rounded-[0.45cqw] border border-chocolate px-[1cqw] py-[0.55cqw] font-inter text-[1.87cqw] leading-none">
+            <span className="absolute bottom-[1.35cqw] left-[3.6cqw] rounded-[0.45cqw] border border-chocolate px-[1cqw] py-[0.55cqw] font-inter text-[1.87cqw] leading-none">
               {card.tag}
             </span>
 
-            <div className="absolute bottom-[2.15cqw] right-[3.38cqw] top-[2.39cqw] w-[47.7cqw] overflow-hidden">
+            <div className="absolute bottom-[2.15cqw] right-[2.15cqw] top-[2.15cqw] w-[50.2cqw] overflow-hidden">
               <Image
                 src={card.image}
                 alt={card.alt}
@@ -307,12 +313,12 @@ function DesktopStack({
 function MobileStack({
   progress,
   activeIndex,
-  canSwitchCards,
+  canSelectCard,
   onActivate,
 }: {
   progress: number;
   activeIndex: number;
-  canSwitchCards: boolean;
+  canSelectCard: (index: number) => boolean;
   onActivate: (index: number) => void;
 }) {
   return (
@@ -334,7 +340,7 @@ function MobileStack({
             tabIndex={motion.pointerEvents === "auto" ? 0 : -1}
             aria-pressed={isActive}
             aria-label={card.alt}
-            className={`absolute w-[74%] origin-top-left touch-manipulation overflow-visible bg-cream text-chocolate [container-type:inline-size] ${cardShadow} ${smoothRender}`}
+            className={`absolute w-[78%] origin-top-left touch-manipulation overflow-visible bg-cream text-chocolate [container-type:inline-size] ${cardShadow} ${smoothRender}`}
             style={{
               left: motion.left,
               top: motion.top,
@@ -345,7 +351,8 @@ function MobileStack({
               transform: motion.transform,
             }}
             onClick={() => {
-              if (!canSwitchCards || motion.pointerEvents !== "auto") return;
+              if (motion.pointerEvents !== "auto") return;
+              if (!canSelectCard(index)) return;
               onActivate(index);
             }}
             onKeyDown={(event) => {
@@ -355,8 +362,8 @@ function MobileStack({
               }
             }}
           >
-            <div className="flex flex-col px-[11cqw] pb-[9cqw] pt-[10cqw]">
-              <div className="relative h-[60cqw] w-full shrink-0 overflow-hidden">
+            <div className="flex flex-col px-[4.5cqw] pb-[6.5cqw] pt-[4.5cqw]">
+              <div className="relative h-[67cqw] w-full shrink-0 overflow-hidden">
                 <Image
                   src={card.image}
                   alt={isActive ? card.alt : ""}
@@ -365,13 +372,13 @@ function MobileStack({
                   className="object-cover"
                 />
               </div>
-              <h3 className="mt-[8cqw] font-inter text-[5.6cqw] font-semibold uppercase leading-[1.08] tracking-[-0.02em]">
+              <h3 className="mt-[7cqw] font-inter text-[5.9cqw] font-semibold uppercase leading-[1.08] tracking-[-0.02em]">
                 {card.title}
               </h3>
-              <p className="mt-[2cqw] font-inter text-[4.35cqw] leading-[1.22]">
+              <p className="mt-[1.6cqw] font-inter text-[4.55cqw] leading-[1.22]">
                 {card.meta}
               </p>
-              <span className="mt-[6cqw] self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[3.9cqw] leading-none">
+              <span className="mt-[10cqw] self-start rounded-[1.3cqw] border border-chocolate px-[2.8cqw] py-[1.4cqw] font-inter text-[4.05cqw] leading-none">
                 {card.tag}
               </span>
             </div>
@@ -395,17 +402,13 @@ export function ExperiencesSection() {
   const storyComplete = progress >= 0.92 || scrollIndex >= cards.length - 1;
   const canSwitchCards = reduceMotion || storyComplete;
   const activeIndex = canSwitchCards ? (hovered ?? scrollIndex) : scrollIndex;
-  const mobileActive = canSwitchCards
-    ? (activeMobile ?? scrollIndex)
-    : scrollIndex;
+  const mobileActive = activeMobile ?? scrollIndex;
+  const canSelectMobileCard = (index: number) =>
+    reduceMotion || canSwitchCards || index <= scrollIndex;
 
   useEffect(() => {
     if (!canSwitchCards && hovered !== null) setHovered(null);
   }, [canSwitchCards, hovered]);
-
-  useEffect(() => {
-    if (!canSwitchCards && activeMobile !== null) setActiveMobile(null);
-  }, [canSwitchCards, activeMobile]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -428,9 +431,6 @@ export function ExperiencesSection() {
     let frame = 0;
 
     const readPinTop = () => {
-      if (window.matchMedia("(min-width: 1024px)").matches) return 0;
-      const header = document.querySelector("header")?.offsetHeight;
-      if (header != null && header > 0) return header;
       const space = getComputedStyle(document.documentElement).getPropertyValue(
         "--header-space",
       );
@@ -438,17 +438,31 @@ export function ExperiencesSection() {
       return Number.isFinite(parsed) ? parsed : 0;
     };
 
+    const pinPanel = section.querySelector<HTMLElement>("[data-experiences-pin]");
+
+    const readViewportHeight = () => {
+      if (pinPanel?.clientHeight) return pinPanel.clientHeight;
+      return window.innerHeight;
+    };
+
     const update = () => {
       const rect = section.getBoundingClientRect();
-      const vh = window.innerHeight;
+      const vh = readViewportHeight();
       const pinTop = readPinTop();
-      const total = Math.max(rect.height - vh, 1);
-      const next =
-        rect.top > pinTop
-          ? 0
-          : rect.bottom <= vh + 1
-            ? 1
-            : clamp(pinTop - rect.top, 0, total) / total;
+      const scrollSpan = Math.max(vh * EXPERIENCE_SCROLL_STEPS, 1);
+
+      if (rect.top > pinTop + 0.5) {
+        setProgress((current) => (current === 0 ? current : 0));
+        return;
+      }
+
+      const scrolled = pinTop - rect.top;
+      if (scrolled >= scrollSpan - 1) {
+        setProgress((current) => (current === 1 ? current : 1));
+        return;
+      }
+
+      const next = clamp(scrolled / scrollSpan, 0, 1);
 
       setProgress((current) =>
         Math.abs(current - next) < 0.002 ? current : next,
@@ -474,25 +488,21 @@ export function ExperiencesSection() {
   const motionProgress = reduceMotion ? 1 : progress;
 
   return (
+    <>
     <section
       id="experiences"
       ref={sectionRef}
-      className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:z-20 lg:overflow-x-clip ${
-        reduceMotion ? "snap-block" : "h-[280vh] lg:h-[calc(400vh/var(--page-scale))]"
+      style={
+        {
+          "--experience-screens": EXPERIENCE_SCROLL_SCREENS,
+        } as CSSProperties
+      }
+      className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:isolate lg:z-0 ${
+        reduceMotion
+          ? "snap-block"
+          : "h-[calc((100svh-var(--header-space))*var(--experience-screens))] lg:h-[calc((var(--screen)-var(--header-space))*var(--experience-screens))] lg:snap-start lg:snap-always"
       }`}
     >
-      {!reduceMotion ? (
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          {Array.from({ length: cards.length }, (_, index) => (
-            <div
-              key={index}
-              className="snap-step"
-              style={{ height: `${100 / cards.length}%` }}
-            />
-          ))}
-        </div>
-      ) : null}
-
       <span className="sr-only">
         Try a new experience, meet your people, see your neighborhood
         differently
@@ -501,48 +511,50 @@ export function ExperiencesSection() {
       <div
         className={
           reduceMotion
-            ? "relative z-20 bg-chocolate lg:hidden"
-            : "sticky top-[var(--header-space)] z-20 bg-chocolate lg:hidden"
+            ? "relative z-0 bg-chocolate lg:hidden"
+            : "sticky top-[var(--header-space)] z-0 bg-chocolate lg:hidden"
         }
       >
-        <div className="page-shell page-x mx-auto w-full max-w-[520px] overflow-visible [container-type:inline-size]">
-          <div className="flex flex-col items-stretch overflow-visible pb-2 pt-[3svh] text-left">
-            <p className="shrink-0 font-inter text-[2.56cqw] uppercase leading-none text-ivory">
+        <div className="page-shell mx-auto w-full max-w-[520px] overflow-visible [container-type:inline-size]">
+          <div className="page-x flex flex-col items-stretch overflow-visible pb-2 pt-[2.5svh] text-left">
+            <p className="shrink-0 text-center font-inter text-[clamp(11px,2.9vw,13px)] font-normal uppercase leading-none tracking-[0.03em] text-ivory">
               Find something that feels like you
             </p>
 
-            <h2
-              className={`relative z-20 mt-[1.6svh] w-full shrink-0 text-left font-playfair text-[7.8cqw] font-normal uppercase leading-[1.02] tracking-[-0.045em] text-cream`}
-            >
-              {cards.map((card, index) => {
-                const isActive = mobileActive === index;
+            <div className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 px-[var(--page-gutter-x)] [container-type:inline-size]">
+              <h2
+                className={`relative z-20 mt-[1.25svh] w-full shrink-0 text-left font-playfair text-[length:clamp(1.45rem,calc((100vw-2*var(--page-gutter-x))/10.5),3.65rem)] font-normal uppercase leading-[0.98] tracking-[-0.05em] text-cream`}
+              >
+                {cards.map((card, index) => {
+                  const isActive = mobileActive === index;
 
-                return (
-                  <button
-                    key={`mobile-${card.title}`}
-                    type="button"
-                    disabled={!canSwitchCards}
-                    className="block w-full text-left uppercase disabled:cursor-default"
-                    style={{ opacity: lineOpacity(index, motionProgress) }}
-                    onClick={() => {
-                      if (!canSwitchCards) return;
-                      setActiveMobile((current) =>
-                        current === index ? null : index,
-                      );
-                    }}
-                    aria-pressed={isActive}
-                  >
-                    {card.mobileLine}
-                  </button>
-                );
-              })}
-            </h2>
+                  return (
+                    <button
+                      key={`mobile-${card.title}`}
+                      type="button"
+                      disabled={!canSelectMobileCard(index)}
+                      className="block w-full text-left uppercase whitespace-nowrap disabled:cursor-default"
+                      style={{ opacity: lineOpacity(index, motionProgress) }}
+                      onClick={() => {
+                        if (!canSelectMobileCard(index)) return;
+                        setActiveMobile((current) =>
+                          current === index ? null : index,
+                        );
+                      }}
+                      aria-pressed={isActive}
+                    >
+                      {card.mobileLine}
+                    </button>
+                  );
+                })}
+              </h2>
+            </div>
 
-            <div className="relative mt-[1.5svh] h-[calc(118cqw+3.5rem)] w-full shrink-0 overflow-visible">
+            <div className="relative mt-[1.25svh] h-[calc(128cqw+2.25rem)] w-full shrink-0 overflow-visible">
               <MobileStack
                 progress={motionProgress}
                 activeIndex={mobileActive}
-                canSwitchCards={canSwitchCards}
+                canSelectCard={canSelectMobileCard}
                 onActivate={(index) =>
                   setActiveMobile((current) =>
                     current === index ? null : index,
@@ -551,8 +563,8 @@ export function ExperiencesSection() {
               />
             </div>
 
-            <div className="relative z-10 mt-2 flex shrink-0 flex-col items-center text-center">
-              <p className="max-w-[88cqw] font-inter text-[2.9cqw] leading-[1.25] text-ivory">
+            <div className="relative z-10 -mt-3 flex shrink-0 flex-col items-center px-1 text-center">
+              <p className="max-w-[34ch] font-inter text-[clamp(1rem,4.15vw,1.125rem)] font-normal leading-[1.32] text-ivory">
                 Your neighborhood is full of people doing interesting things,
                 places waiting to be discovered and initiatives bringing others
                 together
@@ -560,27 +572,29 @@ export function ExperiencesSection() {
 
               <Link
                 href="/?as=neighbr#join"
-                className={`mt-[3cqw] text-center text-[7.4cqw] underline-offset-[1.9cqw] ${ctaClass}`}
+                className={`mt-5 text-center font-playfair text-[clamp(2.1rem,9.1vw,2.85rem)] italic uppercase leading-none tracking-[-0.075em] underline decoration-[1px] underline-offset-[0.22em] transition-opacity hover:opacity-80`}
+                onClick={() => {
+                  document.documentElement.classList.add("join-open");
+                }}
               >
                 Join the waitlist
               </Link>
             </div>
 
-            <div className="mt-6 shrink-0 -mx-[var(--page-gutter-x)] w-[calc(100%+2*var(--page-gutter-x))]">
-              <ExperienceMarquee />
-            </div>
           </div>
         </div>
       </div>
 
       <div
+        data-experiences-pin
         className={
           reduceMotion
-            ? "relative hidden h-[var(--screen)] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
-            : "sticky top-0 relative hidden h-[var(--screen)] grid-cols-[minmax(0,1fr)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-x-clip lg:grid"
+            ? "relative hidden h-[calc(var(--screen)-var(--header-space))] bg-chocolate lg:block"
+            : "sticky top-[var(--header-space)] hidden h-[calc(var(--screen)-var(--header-space))] bg-chocolate lg:block"
         }
       >
-        <p className="absolute left-[50px] top-[88px] z-20 font-inter text-[13px] font-normal uppercase leading-none text-ivory">
+        <div className="absolute inset-0 overflow-hidden">
+        <p className="absolute left-[50px] top-[88px] z-20 text-left font-inter text-[13px] font-normal uppercase leading-none text-ivory">
           Find something that feels like you
         </p>
 
@@ -626,38 +640,38 @@ export function ExperiencesSection() {
         </h2>
 
         <div className="page-shell relative z-0 w-full self-start overflow-visible pb-[calc(clamp(2rem,5vh,3.5rem)/var(--page-scale))] [container-type:inline-size]">
-          <div className="relative" style={{ height: "max(50.5cqw, 580px)" }}>
+          <div className="relative" style={{ height: "max(48cqw, 560px)" }}>
             <DesktopStack
               progress={motionProgress}
               activeIndex={activeIndex}
               canSwitchCards={canSwitchCards}
               onHover={setHovered}
             />
-            <div className="absolute bottom-6 left-[50px] z-20">
-              <p className="max-w-[28rem] font-inter text-[15px] font-normal leading-[1.2] text-ivory">
-                Discover events in different languages, practice a new language,
-                explore another culture, and learn through experience — all
-                without leaving your city
-              </p>
-              <Link
-                href="/?as=neighbr#join"
-                className={`mt-3 inline-block text-[28px] underline-offset-[6px] ${ctaClass}`}
-                onClick={() => {
-                  document.documentElement.classList.add("join-open");
-                }}
-              >
-                Join the waitlist
-              </Link>
-            </div>
           </div>
         </div>
 
-        <div aria-hidden className="min-h-0" />
-
-        <div className="relative z-30 min-w-0 self-end isolation-isolate">
-          <ExperienceMarquee />
+        <div className="absolute bottom-6 left-[50px] z-20 max-w-[28rem]">
+          <p className="font-inter text-[14px] font-normal leading-[1.25] text-ivory">
+            Discover events in different languages, practice a new language,
+            explore another culture, and learn through experience — all without
+            leaving your city
+          </p>
+          <Link
+            href="/?as=neighbr#join"
+            className={`mt-3 inline-block text-[28px] underline-offset-[6px] ${ctaClass}`}
+            onClick={() => {
+              document.documentElement.classList.add("join-open");
+            }}
+          >
+            Join the waitlist
+          </Link>
+        </div>
         </div>
       </div>
     </section>
+    <div className="relative z-20 bg-chocolate pt-10 sm:pt-12 lg:pt-16">
+      <ExperienceMarquee />
+    </div>
+    </>
   );
 }

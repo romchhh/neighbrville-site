@@ -144,7 +144,7 @@ export function Hero() {
               </span>
               <span className="flex items-end justify-between gap-2">
                 <span>participant</span>
-                <span className="mb-[0.38em] shrink-0 text-right font-inter text-[11px] font-normal normal-case leading-[1.1] tracking-[0.01em] text-ivory">
+                <span className="shrink-0 pb-[0.08em] text-right font-inter text-[11px] font-normal normal-case leading-none tracking-[0.01em] text-ivory">
                   Launching Early 2027
                 </span>
               </span>
@@ -191,8 +191,8 @@ export function Hero() {
               <span className="block translate-x-2.5 whitespace-nowrap">
                 <span className="italic">In</span> your local
               </span>
-              <span className="mt-0.5 flex items-baseline justify-between">
-                <span className="mb-[0.16em] shrink-0 font-inter text-[11px] font-normal normal-case leading-none tracking-[0.01em] text-ivory">
+              <span className="mt-0.5 flex items-end justify-between">
+                <span className="shrink-0 pb-[0.08em] font-inter text-[11px] font-normal normal-case leading-none tracking-[0.01em] text-ivory">
                   London &amp; Berlin
                 </span>
                 <span className="translate-x-2.5 italic">community</span>
@@ -206,7 +206,7 @@ export function Hero() {
               <br />
               and initiatives to discover
             </p>
-            <p className="mt-1 text-center font-inter text-[11px] font-medium uppercase tracking-[0.07em] text-ivory">
+            <p className="mt-1 text-center font-inter text-[11px] font-medium uppercase tracking-[0.03em] text-ivory">
               NeighbrVille helps you find them
             </p>
 
@@ -301,7 +301,7 @@ export function Hero() {
               <p className="font-inter text-[12px] leading-[1.1] text-ivory lg:text-[13px]">
                 Launching Early 2027 · London &amp; Berlin
               </p>
-              <p className="mt-4 font-inter text-[11px] font-medium uppercase leading-[1.1] tracking-[0.16em] text-ivory lg:text-[12px] lg:tracking-[0.18em]">
+              <p className="mt-4 font-inter text-[11px] font-medium uppercase leading-[1.1] tracking-[0.04em] text-ivory lg:text-[12px] lg:tracking-[0.05em]">
                 Free to join. No commitment required
               </p>
             </div>

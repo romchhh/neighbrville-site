@@ -34,7 +34,7 @@ export function FaqSection() {
   return (
     <section
       id="faq"
-      className="snap-block scroll-mt-[var(--header-space)] bg-chocolate text-cream lg:min-h-[var(--screen)]"
+      className="snap-block relative z-20 scroll-mt-[var(--header-space)] bg-chocolate text-cream lg:min-h-[var(--screen)]"
     >
       <div className="page-shell page-x grid grid-cols-1 gap-8 py-12 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-12 lg:py-24">
         <h2 className="font-playfair text-[clamp(2rem,9vw,64px)] font-normal uppercase leading-[0.9] tracking-[-0.045em] lg:sticky lg:top-[var(--header-space)] lg:self-start lg:text-[length:var(--section-title)]">
@@ -56,7 +56,7 @@ export function FaqSection() {
                   aria-expanded={isOpen}
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                 >
-                  <span className="font-inter text-[12px] font-medium uppercase tracking-[0.06em] sm:text-[15px] lg:text-[18px] lg:tracking-[0.04em]">
+                  <span className="font-inter text-[12px] font-medium uppercase tracking-[0.03em] sm:text-[15px] lg:text-[18px] lg:tracking-[0.02em]">
                     {item.question}
                   </span>
                   <span

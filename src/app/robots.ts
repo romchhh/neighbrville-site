@@ -8,6 +8,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
+        disallow: ["/admin", "/admin/", "/api/", "/join/edit/", "/join/edit"],
+      },
+      {
+        userAgent: "GPTBot",
+        allow: ["/", "/privacy", "/llms.txt"],
+        disallow: ["/admin", "/api/", "/join/edit/"],
+      },
+      {
+        userAgent: "Google-Extended",
+        allow: ["/", "/privacy", "/llms.txt"],
+        disallow: ["/admin", "/api/", "/join/edit/"],
       },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

@@ -2,10 +2,12 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 
+const MAX_FONT_PX = 299.28;
+
 export function FooterWordmark() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [box, setBox] = useState({ scale: 1, height: 0 });
+  const [fontSizePx, setFontSizePx] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     const wrap = wrapRef.current;
@@ -15,25 +17,21 @@ export function FooterWordmark() {
     let frame = 0;
 
     const fit = () => {
-      const parentWidth = wrap.clientWidth;
-      if (!parentWidth) return;
+      const maxWidth = wrap.clientWidth;
+      if (!maxWidth) return;
 
-      text.style.transform = "scale(1)";
-      const naturalWidth = text.scrollWidth;
-      const naturalHeight = text.offsetHeight;
+      let lo = 12;
+      let hi = MAX_FONT_PX;
 
-      if (!naturalWidth) return;
+      while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2);
+        text.style.fontSize = `${mid}px`;
+        if (text.scrollWidth <= maxWidth) lo = mid;
+        else hi = mid - 1;
+      }
 
-      const scale = parentWidth / naturalWidth;
-      text.style.transform = `scale(${scale})`;
-
-      const height = Math.ceil(naturalHeight * scale);
-
-      setBox((current) =>
-        Math.abs(current.scale - scale) < 0.001 && current.height === height
-          ? current
-          : { scale, height },
-      );
+      text.style.fontSize = `${lo}px`;
+      setFontSizePx((current) => (current === lo ? current : lo));
     };
 
     const schedule = () => {
@@ -58,17 +56,14 @@ export function FooterWordmark() {
   return (
     <div
       ref={wrapRef}
-      className="relative z-10 mt-10 w-full overflow-visible leading-none lg:mt-12"
-      style={{ height: box.height || undefined }}
+      className="relative z-10 mt-10 w-full pb-[env(safe-area-inset-bottom,0px)] lg:mt-12"
     >
       <p
         ref={textRef}
         aria-label="Neighbrville"
-        className="absolute left-0 top-0 whitespace-nowrap font-playfair text-[min(299.28px,48vw)] font-normal uppercase italic leading-[0.72] tracking-[-0.07em] text-chocolate"
+        className="footer-wordmark-text block w-max max-w-full whitespace-nowrap font-playfair font-normal uppercase italic leading-none tracking-[-0.07em] text-chocolate"
         style={{
-          transform: `scale(${box.scale})`,
-          transformOrigin: "left top",
-          paddingInline: "0.08em",
+          fontSize: fontSizePx ? `${fontSizePx}px` : "min(299.28px, 48vw)",
         }}
       >
         NEIGHBRVILLE

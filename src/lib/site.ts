@@ -1,8 +1,13 @@
+import {
+  DEFAULT_META_DESCRIPTION,
+  DEFAULT_META_TITLE,
+} from "@/lib/seo-content";
+
 export const siteConfig = {
   name: "NeighbrVille",
   shortName: "NeighbrVille",
-  description:
-    "Become an active participant in your local community. Discover local experiences, meet your neighbors, and feel at home — launching Early 2027 in London & Berlin.",
+  description: DEFAULT_META_DESCRIPTION,
+  defaultTitle: DEFAULT_META_TITLE,
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://neighbrville.com").replace(
     /\/$/,
     "",
@@ -11,12 +16,26 @@ export const siteConfig = {
   email: "hello@neighbrville.com",
   launch: "Early 2027",
   cities: ["London", "Berlin"] as const,
-  ogImage: "/images/sections/be-here.png",
+  ogImage: "/opengraph-image",
+  keywords: [
+    "NeighbrVille",
+    "local community",
+    "neighborhood experiences",
+    "community events London",
+    "community events Berlin",
+    "meet neighbors",
+    "local activities",
+    "host experiences",
+    "community platform",
+    "neighborhood clubs",
+    "pottery workshop",
+    "repair cafe",
+  ],
   socials: {
-    instagram: "https://instagram.com",
-    facebook: "https://facebook.com",
-    tiktok: "https://tiktok.com",
-    linkedin: "https://linkedin.com",
+    instagram: "https://www.instagram.com/neighbrville/",
+    facebook: "https://www.facebook.com/neighbrville",
+    tiktok: "https://www.tiktok.com/@neighbrville",
+    linkedin: "https://www.linkedin.com/company/neighbrville",
   },
 } as const;
 

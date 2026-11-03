@@ -1,5 +1,8 @@
 import Image from "next/image";
 
+const subtitleLeft = "We live closer together than ever";
+const subtitleRight = "yet many of us feel more disconnected than before";
+
 export function ValueSection() {
   return (
     <section
@@ -33,22 +36,22 @@ export function ValueSection() {
           </span>
         </h2>
 
-        <div
-          className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase tracking-[0.06em] text-chocolate sm:gap-2 sm:tracking-[0.07em] lg:gap-3 lg:pr-10 lg:text-[13px] lg:tracking-[0.08em]"
-        >
-          <span className="shrink-0 whitespace-nowrap">Shared interests</span>
-          <span className="shrink-0" aria-hidden>/</span>
-          <span className="shrink-0 whitespace-nowrap">
-            Stronger communities
+        <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-2 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase leading-[1.25] tracking-[0.02em] text-chocolate sm:gap-3 sm:tracking-[0.03em] lg:gap-4 lg:pr-10 lg:text-[13px]">
+          <span className="max-w-[42%] shrink text-left">{subtitleLeft}</span>
+          <span className="shrink-0 px-0.5" aria-hidden>
+            |
           </span>
+          <span className="max-w-[42%] shrink text-right">{subtitleRight}</span>
         </div>
 
         <p className="relative z-10 mt-auto max-w-[34rem] shrink-0 font-inter text-[15px] leading-[1.35] text-chocolate lg:hidden">
-          Your neighborhood is full of people doing interesting things, places
-          waiting to be discovered and initiatives bringing others together
+          NeighbrVille is a platform for discovering what your local community
+          has to offer. From workshops and hobby groups to cultural events and
+          local initiatives, find things to do, people to meet and ways to get
+          involved
         </p>
 
-        <p className="relative z-10 hidden max-w-[36rem] shrink-0 font-inter text-[14px] leading-[1.22] text-chocolate lg:block lg:text-[15px]">
+        <p className="relative z-10 mt-auto hidden max-w-[36rem] shrink-0 font-inter text-[15px] leading-[1.22] text-chocolate lg:block">
           NeighbrVille is a platform for discovering everything your local
           community has to offer. From creative workshops and hobby groups to
           cultural events and grassroots initiatives, find things to do, people

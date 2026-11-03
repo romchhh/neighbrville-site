@@ -1,10 +1,15 @@
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Suspense } from "react";
 
 import { JsonLd, siteJsonLd } from "@/components/JsonLd";
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import { PageViewTracker } from "@/components/PageViewTracker";
+import { SiteTags, SiteTagsNoscript } from "@/components/SiteTags";
+import { buildPageMetadata } from "@/lib/seo";
 
 import "./globals.css";
+
+export const dynamic = "force-dynamic";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -24,77 +29,21 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#2b1a12",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#2b1a12" },
+    { media: "(prefers-color-scheme: dark)", color: "#2b1a12" },
+  ],
   colorScheme: "dark",
   viewportFit: "cover",
+  width: "device-width",
+  initialScale: 1,
 };
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — Local community experiences`,
-    template: `%s · ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  applicationName: siteConfig.name,
-  authors: [{ name: siteConfig.name, url: siteConfig.url }],
-  creator: siteConfig.name,
-  publisher: siteConfig.name,
-  keywords: [
-    "NeighbrVille",
-    "local community",
-    "neighborhood experiences",
-    "London",
-    "Berlin",
-    "community events",
-    "meet neighbors",
-    "local activities",
-    "host experiences",
-  ],
-  category: "community",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    locale: siteConfig.locale,
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-    title: `${siteConfig.name} — Local community experiences`,
-    description: siteConfig.description,
-    images: [
-      {
-        url: absoluteUrl(siteConfig.ogImage),
-        width: 1200,
-        height: 1200,
-        alt: "NeighbrVille — become part of your local community",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${siteConfig.name} — Local community experiences`,
-    description: siteConfig.description,
-    images: [absoluteUrl(siteConfig.ogImage)],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-  icons: {
-    icon: [{ url: "/brand/favicon.svg", type: "image/svg+xml" }],
-    shortcut: "/brand/favicon.svg",
-  },
-};
+export async function generateMetadata() {
+  return buildPageMetadata({ path: "/" });
+}
 
-export default function RootLayout({
+export default function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -102,7 +51,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${inter.variable} antialiased`}>
+        <SiteTags />
+        <SiteTagsNoscript />
         <JsonLd data={siteJsonLd()} />
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
         {children}
       </body>
     </html>

@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  description: "This NeighbrVille page could not be found.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NotFound() {
   return (
@@ -10,7 +20,7 @@ export default function NotFound() {
         <Header />
 
         <div className="page-shell page-x flex flex-1 flex-col items-start justify-center py-16 lg:py-24">
-          <p className="font-inter text-[12px] uppercase tracking-[0.18em] text-cream/70">
+          <p className="font-inter text-[12px] uppercase tracking-[0.05em] text-cream/70">
             Error 404
           </p>
           <h1 className="mt-5 max-w-[16ch] font-playfair text-[clamp(2.4rem,6vw,72px)] font-normal uppercase italic leading-[0.9] tracking-[-0.045em] lg:text-[clamp(2.4rem,calc(6*var(--dvw)),72px)]">
@@ -22,7 +32,7 @@ export default function NotFound() {
           </p>
           <Link
             href="/"
-            className="mt-10 bg-cream px-5 py-3 font-inter text-[12px] font-medium uppercase tracking-[0.06em] text-chocolate transition-opacity hover:opacity-90"
+            className="mt-10 bg-cream px-5 py-3 font-inter text-[12px] font-medium uppercase tracking-[0.03em] text-chocolate transition-opacity hover:opacity-90"
           >
             Back to home
           </Link>

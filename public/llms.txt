@@ -1,0 +1,24 @@
+# NeighbrVille
+
+> NeighbrVille is a local community platform helping people discover neighborhood experiences, meet neighbors, and feel at home. Initial launch: Early 2027 in London & Berlin.
+
+## Site
+
+- Home: https://neighbrville.com/
+- Privacy Policy: https://neighbrville.com/privacy
+- Contact: hello@neighbrville.com
+
+## About
+
+NeighbrVille connects people with local experiences (pottery, repair cafés, pasta nights, photo walks, and more), hosts, and community partners. Visitors can join a waitlist as a Neighbr or Partner/Host.
+
+## Key pages
+
+- `/` — marketing homepage with waitlist signup
+- `/privacy` — privacy notice
+
+## Do not index
+
+- `/admin` — private admin panel
+- `/api/*` — application APIs
+- `/join/edit/*` — private profile edit links

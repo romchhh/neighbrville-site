@@ -23,7 +23,7 @@ const photos = [
   {
     src: "/images/community/workshop.png",
     alt: "People gathered around a workshop table",
-    box: { left: "80.3%", top: "16.8%", width: "11.1%", height: "18%" },
+    box: { left: "88%", top: "16.8%", width: "11.1%", height: "18%" },
   },
   {
     src: "/images/community/performance.png",
@@ -97,9 +97,9 @@ export function CommunitySection() {
   return (
     <section
       id="village"
-      className="relative snap-block overflow-x-clip bg-chocolate text-cream lg:relative lg:z-10 lg:scroll-mt-8"
+      className="relative z-20 snap-block overflow-x-clip bg-chocolate text-cream lg:scroll-mt-8"
     >
-      <div className="page-shell page-x hidden lg:block lg:pt-44">
+      <div className="page-shell page-x hidden lg:block lg:pt-4">
         <div className="relative aspect-[1440/860] w-full overflow-hidden lg:overflow-visible">
           {photos.map((photo) => (
             <InteractivePhoto
@@ -110,8 +110,8 @@ export function CommunitySection() {
             />
           ))}
 
-          <div className="pointer-events-none absolute inset-x-[10%] top-[32.4%] z-10 text-center">
-            <p className="font-inter text-[12px] font-normal uppercase tracking-[0.24em] text-ivory">
+          <div className="pointer-events-none absolute inset-x-[10%] top-[26%] z-20 text-center">
+            <p className="font-inter text-[12px] font-normal uppercase tracking-[0.06em] text-ivory">
               Built by the neighborhood
             </p>
 
@@ -125,7 +125,7 @@ export function CommunitySection() {
               </span>
             </h2>
 
-            <p className="mt-7 whitespace-nowrap font-inter text-[13px] font-normal uppercase tracking-[0.06em] text-ivory">
+            <p className="mt-7 whitespace-nowrap font-inter text-[13px] font-normal uppercase tracking-[0.03em] text-ivory">
               You offer events, spaces, programs, or something else entirely?
             </p>
 
@@ -185,7 +185,7 @@ export function CommunitySection() {
         </div>
 
         <div className="page-x relative z-10 mx-auto mt-8 max-w-[420px] text-center">
-          <p className="font-inter text-[11px] font-normal uppercase tracking-[0.18em] text-ivory">
+          <p className="font-inter text-[11px] font-normal uppercase tracking-[0.05em] text-ivory">
             Built by the neighborhood
           </p>
           <h2 className="mt-5 font-playfair text-[clamp(1.7rem,7.6vw,2.35rem)] font-normal uppercase leading-[0.95] tracking-[-0.04em]">
