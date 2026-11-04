@@ -235,8 +235,11 @@ export function Hero() {
 
       {/* ───────────── Desktop ───────────── */}
       <div className="relative hidden min-h-0 w-full flex-1 lg:block">
-        <div className="absolute inset-0 px-[50px] [--pw:clamp(178px,calc(14.4*var(--dvw)),244px)]">
-            <p className="absolute left-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[15px] leading-[1.28] text-ivory">
+        {/* Match Header: page-x outside, page-shell inside — side copy aligns
+            with logo (left) and Join button (right). */}
+        <div className="absolute inset-0 page-x">
+          <div className="page-shell relative mx-auto h-full [--pw:clamp(178px,calc(14.4*var(--dvw)),244px)]">
+            <p className="absolute left-0 top-[22%] -translate-y-1/2 whitespace-nowrap text-left font-inter text-[15px] leading-[1.28] text-ivory">
               Your neighborhood is full of places,
               <br />
               people, and initiatives to discover
@@ -252,13 +255,13 @@ export function Hero() {
               <span className="block italic">community</span>
             </h1>
 
-            <p className="absolute right-[50px] top-[22%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[15px] leading-[1.28] text-ivory">
+            <p className="absolute right-0 top-[22%] -translate-y-1/2 whitespace-nowrap text-right font-inter text-[15px] leading-[1.28] text-ivory">
               NeighbrVille helps you find them,
               <br />
               connect, and build community
             </p>
 
-            <div className="absolute inset-x-[50px] top-[56%] z-10 flex -translate-y-1/2 items-center justify-center">
+            <div className="absolute inset-x-0 top-[56%] z-10 flex -translate-y-1/2 items-center justify-center">
               {polaroids.map((photo, index) => {
                 const isHovered = hovered === index;
 
@@ -305,7 +308,7 @@ export function Hero() {
               })}
             </div>
 
-            <div className="absolute inset-x-[50px] bottom-[50px] z-20 text-center">
+            <div className="absolute inset-x-0 bottom-[50px] z-20 text-center">
               <p className="font-inter text-[12px] leading-[1.1] text-ivory lg:text-[13px]">
                 Launching Early 2027 · London &amp; Berlin
               </p>
@@ -313,6 +316,7 @@ export function Hero() {
                 Free to join. No commitment required
               </p>
             </div>
+          </div>
         </div>
       </div>
     </div>
