@@ -25,6 +25,8 @@ export type RegistrationRow = {
   socials: string;
   about: string;
   profile_completed: number;
+  email_confirmed: number;
+  email_confirmed_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -53,6 +55,8 @@ export function rowToPublic(row: RegistrationRow): PublicRegistration {
     name: row.name,
     role: row.role,
     profileCompleted: row.profile_completed === 1,
+    emailConfirmed: row.email_confirmed === 1,
+    emailConfirmedAt: row.email_confirmed_at ?? null,
     profile: {
       interests: parseJsonArray(row.interests),
       languages: parseJsonArray(row.languages),
@@ -94,6 +98,7 @@ export function getRegistrationStats() {
       `SELECT
         COUNT(*) AS total,
         SUM(CASE WHEN profile_completed = 1 THEN 1 ELSE 0 END) AS completed,
+        SUM(CASE WHEN email_confirmed = 1 THEN 1 ELSE 0 END) AS confirmed,
         SUM(CASE WHEN role = 'neighbr' THEN 1 ELSE 0 END) AS neighbrs,
         SUM(CASE WHEN role = 'partner' THEN 1 ELSE 0 END) AS partners
        FROM registrations`,
@@ -101,6 +106,7 @@ export function getRegistrationStats() {
     .get() as {
     total: number;
     completed: number;
+    confirmed: number;
     neighbrs: number;
     partners: number;
   };
@@ -116,6 +122,7 @@ export function getRegistrationStats() {
   return {
     total: totals.total || 0,
     completed: totals.completed || 0,
+    confirmed: totals.confirmed || 0,
     neighbrs: totals.neighbrs || 0,
     partners: totals.partners || 0,
     last7Days: week.count || 0,
@@ -318,4 +325,50 @@ export function updateProfileByToken(
     );
 
   return { ok: true, count: getCompletedRegistrationCount() };
+}
+
+export type ConfirmEmailResult =
+  | {
+      ok: true;
+      alreadyConfirmed: boolean;
+      email: string;
+      name: string;
+      confirmedAt: string;
+    }
+  | { ok: false; code: "not_found" };
+
+export function confirmEmailByToken(token: string): ConfirmEmailResult {
+  const row = findRegistrationByToken(token);
+  if (!row) {
+    return { ok: false, code: "not_found" };
+  }
+
+  if (row.email_confirmed === 1 && row.email_confirmed_at) {
+    return {
+      ok: true,
+      alreadyConfirmed: true,
+      email: row.email,
+      name: row.name,
+      confirmedAt: row.email_confirmed_at,
+    };
+  }
+
+  const timestamp = nowIso();
+  getDb()
+    .prepare(
+      `UPDATE registrations
+       SET email_confirmed = 1,
+           email_confirmed_at = ?,
+           updated_at = ?
+       WHERE edit_token = ?`,
+    )
+    .run(timestamp, timestamp, token.trim());
+
+  return {
+    ok: true,
+    alreadyConfirmed: false,
+    email: row.email,
+    name: row.name,
+    confirmedAt: timestamp,
+  };
 }

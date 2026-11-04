@@ -75,11 +75,12 @@ export function buildJoinConfirmationHtml(options: {
   name: string;
   role: JoinRole;
   editUrl: string;
+  confirmUrl: string;
   contactEmail?: string;
 }) {
   const logoUrl = absoluteUrl("/brand/logo.svg");
   const siteUrl = siteConfig.url;
-  const { name, role, editUrl } = options;
+  const { name, role, editUrl, confirmUrl } = options;
   const firstName = name.split(/\s+/)[0] || name;
   const copy = copyForRole(role);
   const contactEmail = options.contactEmail || siteConfig.email;
@@ -110,10 +111,25 @@ export function buildJoinConfirmationHtml(options: {
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;width:100%;">
 
           <tr>
-            <td align="center" style="padding:0 0 28px;">
+            <td align="center" style="padding:0 0 20px;">
               <a href="${siteUrl}" style="text-decoration:none;">
                 <img src="${logoUrl}" alt="NeighbrVille" width="168" height="42" style="display:block;border:0;outline:none;height:auto;max-width:168px;" />
               </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="padding:0 0 24px;">
+              <!--[if mso]>
+              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="${confirmUrl}" style="height:48px;v-text-anchor:middle;width:220px;" arcsize="0%" stroke="f" fillcolor="${CREAM}">
+                <center style="color:${CHOCOLATE};font-family:Arial,sans-serif;font-size:15px;font-weight:700;">Confirm email</center>
+              </v:roundrect>
+              <![endif]-->
+              <!--[if !mso]><!-- -->
+              <a href="${confirmUrl}" style="display:inline-block;background-color:${CREAM};color:${CHOCOLATE};font-family:Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;line-height:1;letter-spacing:0.02em;text-decoration:none;padding:16px 28px;border:0;">
+                Confirm email
+              </a>
+              <!--<![endif]-->
             </td>
           </tr>
 
@@ -193,7 +209,13 @@ export function buildJoinConfirmationHtml(options: {
                 ${siteConfig.name} · ${siteConfig.launch} in ${cities}
               </p>
               <p style="margin:0 0 8px;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:${CHOCOLATE};opacity:0.75;">
-                Link not working?
+                Confirm link not working?
+              </p>
+              <p style="margin:0 0 16px;font-family:Helvetica,Arial,sans-serif;font-size:12px;line-height:1.45;word-break:break-all;">
+                <a href="${confirmUrl}" style="color:${CHOCOLATE};text-decoration:underline;">${escapeHtml(confirmUrl)}</a>
+              </p>
+              <p style="margin:0 0 8px;font-family:Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:${CHOCOLATE};opacity:0.75;">
+                Edit details link
               </p>
               <p style="margin:0;font-family:Helvetica,Arial,sans-serif;font-size:12px;line-height:1.45;word-break:break-all;">
                 <a href="${editUrl}" style="color:${CHOCOLATE};text-decoration:underline;">${escapeHtml(editUrl)}</a>
@@ -218,6 +240,7 @@ function buildJoinConfirmationText(options: {
   name: string;
   role: JoinRole;
   editUrl: string;
+  confirmUrl: string;
   contactEmail?: string;
 }) {
   const firstName = options.name.split(/\s+/)[0] || options.name;
@@ -225,6 +248,9 @@ function buildJoinConfirmationText(options: {
   const contactEmail = options.contactEmail || siteConfig.email;
 
   return [
+    "Confirm your email:",
+    options.confirmUrl,
+    "",
     copy.greeting,
     "",
     `Hi ${firstName} — glad you're here.`,
@@ -265,12 +291,18 @@ export async function sendJoinConfirmationEmail(options: {
   const { apiKey, from } = resolveResendConfig();
   const resend = getResend(apiKey);
   const editUrl = absoluteUrl(`/join/edit/${options.editToken}`);
+  const confirmUrl = absoluteUrl(`/join/confirm/${options.editToken}`);
   const contactEmail = getSiteSettings().email || siteConfig.email;
   const copy = copyForRole(options.role);
 
   if (!resend) {
     if (process.env.NODE_ENV === "development") {
-      console.info("[join-email] RESEND_API_KEY missing. Edit URL:", editUrl);
+      console.info(
+        "[join-email] RESEND_API_KEY missing. Confirm URL:",
+        confirmUrl,
+        "Edit URL:",
+        editUrl,
+      );
     }
     return { ok: false as const, reason: "missing_api_key" as const };
   }
@@ -279,6 +311,7 @@ export async function sendJoinConfirmationEmail(options: {
     name: options.name,
     role: options.role,
     editUrl,
+    confirmUrl,
     contactEmail,
   };
 

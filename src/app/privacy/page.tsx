@@ -11,6 +11,7 @@ import {
   breadcrumbJsonLd,
   privacyPageJsonLd,
 } from "@/components/JsonLd";
+import { getSiteSettings } from "@/lib/admin/settings";
 import { PrivacyMarkdown } from "@/lib/privacy-markdown";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -29,15 +30,18 @@ export async function generateMetadata() {
   });
 }
 
-function loadPrivacyMarkdown() {
-  return readFileSync(
+function loadPrivacyMarkdown(contactEmail: string) {
+  const raw = readFileSync(
     path.join(process.cwd(), "src/content/privacy-policy.md"),
     "utf8",
   );
+  // Keep the markdown file stable; swap the public contact address from settings.
+  return raw.replaceAll("info@neighbrville.com", contactEmail);
 }
 
 export default function PrivacyPage() {
-  const source = loadPrivacyMarkdown();
+  const contactEmail = getSiteSettings().email || siteConfig.email;
+  const source = loadPrivacyMarkdown(contactEmail);
 
   return (
     <>

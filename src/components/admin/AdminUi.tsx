@@ -87,6 +87,8 @@ function statusLabel(status: string) {
   const map: Record<string, string> = {
     new: "Incomplete",
     completed: "Complete",
+    confirmed: "Confirmed",
+    unconfirmed: "Unconfirmed",
     neighbr: "Neighbr",
     partner: "Partner",
   };

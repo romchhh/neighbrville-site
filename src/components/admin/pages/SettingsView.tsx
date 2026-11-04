@@ -88,14 +88,6 @@ export default function SettingsView() {
                   }
                 />
               </Field>
-              <Field label="Public contact email">
-                <input
-                  value={settings.email}
-                  onChange={(e) =>
-                    setSettings({ ...settings, email: e.target.value })
-                  }
-                />
-              </Field>
               <Field label="Join count base (added to real signups)">
                 <input
                   type="number"
@@ -110,6 +102,27 @@ export default function SettingsView() {
                 />
               </Field>
             </div>
+          </AdminCard>
+
+          <AdminCard title="Contact">
+            <div className={ui.formGrid}>
+              <Field label="Public contact email">
+                <input
+                  type="email"
+                  value={settings.email}
+                  onChange={(e) =>
+                    setSettings({ ...settings, email: e.target.value.trim() })
+                  }
+                  placeholder="info@neighbrville.com"
+                  autoComplete="off"
+                />
+              </Field>
+            </div>
+            <p className={ui.statHint} style={{ marginTop: 12 }}>
+              Shown in the footer, waitlist emails, privacy policy and structured
+              data. After changing it, also update Resend “From address” under
+              Integrations if you send from the same inbox.
+            </p>
           </AdminCard>
 
           <AdminCard title="Social links">
@@ -284,7 +297,8 @@ export default function SettingsView() {
           </div>
           <p className={ui.statHint} style={{ marginTop: 12 }}>
             Falls back to RESEND_API_KEY / RESEND_FROM in .env if empty.
-            Masked values are kept unchanged on save.
+            Masked values are kept unchanged on save. Use the same inbox as
+            Contact email when possible so replies stay consistent.
           </p>
         </AdminCard>
       ) : null}

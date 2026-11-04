@@ -20,6 +20,8 @@ type Registration = {
   name: string;
   role: "neighbr" | "partner";
   profileCompleted: boolean;
+  emailConfirmed: boolean;
+  emailConfirmedAt: string | null;
   editToken: string;
   createdAt: string;
   updatedAt: string;
@@ -34,7 +36,14 @@ type Registration = {
   };
 };
 
-type Filter = "all" | "completed" | "incomplete" | "neighbr" | "partner";
+type Filter =
+  | "all"
+  | "completed"
+  | "incomplete"
+  | "confirmed"
+  | "unconfirmed"
+  | "neighbr"
+  | "partner";
 
 function formatTime(iso: string) {
   try {
@@ -79,6 +88,8 @@ export default function RegistrationsView() {
     return items.filter((item) => {
       if (filter === "completed" && !item.profileCompleted) return false;
       if (filter === "incomplete" && item.profileCompleted) return false;
+      if (filter === "confirmed" && !item.emailConfirmed) return false;
+      if (filter === "unconfirmed" && item.emailConfirmed) return false;
       if (filter === "neighbr" && item.role !== "neighbr") return false;
       if (filter === "partner" && item.role !== "partner") return false;
       if (!q) return true;
@@ -119,17 +130,21 @@ export default function RegistrationsView() {
 
   const filters: Array<{ id: Filter; label: string }> = [
     { id: "all", label: "All" },
-    { id: "completed", label: "Completed" },
-    { id: "incomplete", label: "Incomplete" },
+    { id: "confirmed", label: "Email confirmed" },
+    { id: "unconfirmed", label: "Email unconfirmed" },
+    { id: "completed", label: "Profile complete" },
+    { id: "incomplete", label: "Profile incomplete" },
     { id: "neighbr", label: "Neighbrs" },
     { id: "partner", label: "Partners" },
   ];
+
+  const confirmedCount = items.filter((item) => item.emailConfirmed).length;
 
   return (
     <div className={ui.stack}>
       <AdminPageHeader
         title="Waitlist registrations"
-        description="Everyone who joined with name + email. Completed profiles count toward the public total."
+        description={`${confirmedCount} of ${items.length} emails confirmed. Completed profiles count toward the public total.`}
         action={
           <GhostButton onClick={() => void load()}>Refresh</GhostButton>
         }
@@ -170,7 +185,8 @@ export default function RegistrationsView() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
-                  <th>Status</th>
+                  <th>Email status</th>
+                  <th>Profile</th>
                   <th>Joined</th>
                   <th />
                 </tr>
@@ -178,7 +194,7 @@ export default function RegistrationsView() {
               <tbody>
                 {visible.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className={ui.empty}>
+                    <td colSpan={7} className={ui.empty}>
                       No matching registrations.
                     </td>
                   </tr>
@@ -200,6 +216,13 @@ export default function RegistrationsView() {
                       <td>{item.email}</td>
                       <td>
                         <StatusBadge status={item.role} />
+                      </td>
+                      <td>
+                        <StatusBadge
+                          status={
+                            item.emailConfirmed ? "confirmed" : "unconfirmed"
+                          }
+                        />
                       </td>
                       <td>
                         <StatusBadge
@@ -239,7 +262,14 @@ export default function RegistrationsView() {
               <strong>Role:</strong> {detail.role}
             </p>
             <p>
-              <strong>Status:</strong>{" "}
+              <strong>Email status:</strong>{" "}
+              {detail.emailConfirmed ? "Confirmed" : "Unconfirmed"}
+              {detail.emailConfirmedAt
+                ? ` · ${formatTime(detail.emailConfirmedAt)}`
+                : ""}
+            </p>
+            <p>
+              <strong>Profile:</strong>{" "}
               {detail.profileCompleted ? "Completed" : "Incomplete"}
             </p>
             <p>

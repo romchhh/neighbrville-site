@@ -37,7 +37,7 @@ export async function PUT(request: Request) {
     ...body,
     brandName: String(body.brandName ?? current.brandName),
     domain: String(body.domain ?? current.domain),
-    email: String(body.email ?? current.email),
+    email: String(body.email ?? current.email).trim(),
     metaTitle: String(body.metaTitle ?? current.metaTitle),
     metaDescription: String(body.metaDescription ?? current.metaDescription),
     ogImage: String(body.ogImage ?? current.ogImage),

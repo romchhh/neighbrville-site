@@ -13,6 +13,27 @@ function ensureDataDir(filePath: string) {
   }
 }
 
+function columnExists(
+  database: Database.Database,
+  table: string,
+  column: string,
+) {
+  const cols = database.prepare(`PRAGMA table_info(${table})`).all() as Array<{
+    name: string;
+  }>;
+  return cols.some((col) => col.name === column);
+}
+
+function ensureColumn(
+  database: Database.Database,
+  table: string,
+  column: string,
+  definition: string,
+) {
+  if (columnExists(database, table, column)) return;
+  database.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+}
+
 function initSchema(database: Database.Database) {
   database.exec(`
     CREATE TABLE IF NOT EXISTS registrations (
@@ -29,12 +50,17 @@ function initSchema(database: Database.Database) {
       socials TEXT NOT NULL DEFAULT '',
       about TEXT NOT NULL DEFAULT '',
       profile_completed INTEGER NOT NULL DEFAULT 0,
+      email_confirmed INTEGER NOT NULL DEFAULT 0,
+      email_confirmed_at TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_registrations_completed
       ON registrations (profile_completed);
+
+    CREATE INDEX IF NOT EXISTS idx_registrations_email_confirmed
+      ON registrations (email_confirmed);
 
     CREATE TABLE IF NOT EXISTS admin_sessions (
       token TEXT PRIMARY KEY,
@@ -63,6 +89,15 @@ function initSchema(database: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_analytics_type
       ON analytics_events (type);
   `);
+
+  // Existing local/prod DBs created before email confirmation.
+  ensureColumn(
+    database,
+    "registrations",
+    "email_confirmed",
+    "INTEGER NOT NULL DEFAULT 0",
+  );
+  ensureColumn(database, "registrations", "email_confirmed_at", "TEXT");
 }
 
 export function getDb() {

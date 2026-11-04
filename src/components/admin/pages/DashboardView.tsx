@@ -29,6 +29,7 @@ type DashboardPayload = {
     email: string;
     role: string;
     profileCompleted: boolean;
+    emailConfirmed: boolean;
     createdAt: string;
   }>;
 };
@@ -84,7 +85,7 @@ export default function DashboardView() {
                 <tr>
                   <th>Person</th>
                   <th>Role</th>
-                  <th>Status</th>
+                  <th>Email</th>
                   <th>When</th>
                 </tr>
               </thead>
@@ -109,7 +110,9 @@ export default function DashboardView() {
                       </td>
                       <td>
                         <StatusBadge
-                          status={item.profileCompleted ? "completed" : "new"}
+                          status={
+                            item.emailConfirmed ? "confirmed" : "unconfirmed"
+                          }
                         />
                       </td>
                       <td>{formatTime(item.createdAt)}</td>

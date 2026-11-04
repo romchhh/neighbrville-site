@@ -15,5 +15,7 @@ export type PublicRegistration = {
   name: string;
   role: JoinRole;
   profileCompleted: boolean;
+  emailConfirmed: boolean;
+  emailConfirmedAt: string | null;
   profile: RegistrationProfile;
 };

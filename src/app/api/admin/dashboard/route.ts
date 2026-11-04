@@ -49,15 +49,15 @@ export async function GET() {
         trend: "up" as const,
       },
       {
-        id: "completion",
-        label: "Completion rate",
-        value:
+        id: "confirmed",
+        label: "Emails confirmed",
+        value: String(stats.confirmed),
+        delta:
           stats.total === 0
             ? "—"
-            : `${Math.round((stats.completed / stats.total) * 100)}%`,
-        delta: "profiles / signups",
-        hint: "Waitlist → profile",
-        trend: "neutral" as const,
+            : `${Math.round((stats.confirmed / stats.total) * 100)}% of signups`,
+        hint: "Clicked Confirm email in the welcome letter",
+        trend: "up" as const,
       },
     ],
     visitsSeries: getVisitsSeries(7),

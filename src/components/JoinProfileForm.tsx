@@ -191,7 +191,7 @@ function DropdownField({
                     aria-selected={checked}
                     tabIndex={open ? 0 : -1}
                     onClick={() => toggleOption(option)}
-                    className="flex w-full items-center justify-between gap-4 py-3.5 text-left font-inter text-[15px] leading-[1.25] text-chocolate transition-colors duration-150 hover:bg-chocolate/[0.04] active:bg-chocolate/[0.07]"
+                    className="flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left font-inter text-[15px] leading-[1.25] text-chocolate transition-colors duration-150 hover:bg-chocolate/[0.04] active:bg-chocolate/[0.07] sm:px-5"
                   >
                     <span>{option}</span>
                     {checked ? (
@@ -208,7 +208,7 @@ function DropdownField({
             })}
           </ul>
 
-          <div className="flex items-center justify-between gap-4 border-x border-b border-chocolate px-1 py-4">
+          <div className="flex items-center justify-between gap-4 border-x border-b border-chocolate px-4 py-4 sm:px-5">
             <p className="font-inter text-[12px] leading-[1.3] text-chocolate/75">
               {selected.length === 0
                 ? "Select one or more"
