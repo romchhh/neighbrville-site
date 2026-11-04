@@ -19,7 +19,9 @@ export function ValueSection() {
         />
       </div>
 
-      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-[var(--screen)] lg:px-[50px] lg:py-[50px]">
+      {/* Desktop: pl 50px from photo split; pr = page gutter so right
+          subtitle lines up with header Join buttons (same as Hero). */}
+      <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-[var(--screen)] lg:pl-[50px] lg:py-[50px]">
         <h2 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[length:var(--section-title)] lg:leading-[0.9]">
           {/* Mobile: “A” of “a village” starts the second line */}
           <span className="block lg:hidden">
@@ -36,7 +38,7 @@ export function ValueSection() {
           </span>
         </h2>
 
-        <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1.5 font-inter text-[clamp(0.5rem,2.35vw,0.8125rem)] uppercase leading-[1.25] tracking-[0.01em] text-chocolate sm:gap-3 sm:tracking-[0.03em] lg:gap-4 lg:pr-10 lg:text-[13px] lg:tracking-[0.02em]">
+        <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1.5 font-inter text-[clamp(0.5rem,2.35vw,0.8125rem)] uppercase leading-[1.25] tracking-[0.01em] text-chocolate sm:gap-3 sm:tracking-[0.03em] lg:gap-4 lg:text-[13px] lg:tracking-[0.02em]">
           <span className="min-w-0 max-w-[46%] shrink text-left">
             <span className="block whitespace-nowrap">We live closer together</span>
             <span className="block whitespace-nowrap">than ever</span>
