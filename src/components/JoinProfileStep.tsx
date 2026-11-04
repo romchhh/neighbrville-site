@@ -60,9 +60,13 @@ const profileCopy: Record<JoinRole, ProfileCopy> = {
     ),
     rightTitle: (
       <>
-        Tell us what <span className="italic">you can</span>
+        <span className="whitespace-nowrap">
+          Tell us what <span className="italic">you can</span>
+        </span>
         <br />
-        bring to <span className="italic">the village</span>
+        <span className="whitespace-nowrap">
+          bring to <span className="italic">the village</span>
+        </span>
       </>
     ),
     bannerAlign: "center",
@@ -293,7 +297,7 @@ export function JoinProfileStep({
       inviteCta={copy.inviteCta}
       onInvite={() => shareJoinInvite(role)}
     >
-      <h3 className="mb-6 max-w-[18ch] font-playfair text-[clamp(1.9rem,7.5vw,2.85rem)] font-normal uppercase leading-[0.9] tracking-[-0.045em] text-cream lg:mb-7 lg:max-w-[17ch] lg:text-[clamp(2rem,calc(2.7*var(--dvw)),2.85rem)]">
+      <h3 className="mb-6 max-w-[22ch] font-playfair text-[clamp(1.9rem,7.5vw,2.85rem)] font-normal uppercase leading-[0.9] tracking-[-0.045em] text-cream lg:mb-7 lg:max-w-[20ch] lg:text-[clamp(2rem,calc(2.7*var(--dvw)),2.85rem)]">
         {copy.rightTitle}
       </h3>
 

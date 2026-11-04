@@ -60,6 +60,7 @@ export function JoinMemberCount({
       <>
         You’re joining{" "}
         <span className={countClassName}>{display} future Neighbrs</span>, Hosts,
+        <br />
         and Partners helping build a more connected local life
       </>
     );
