@@ -151,10 +151,5 @@ export function applySecretUpdate(
 }
 
 export function getPublicSocialLinks(settings = getSiteSettings()) {
-  return [
-    settings.socialInstagram,
-    settings.socialFacebook,
-    settings.socialTiktok,
-    settings.socialLinkedin,
-  ].filter(Boolean);
+  return [settings.socialInstagram, settings.socialTiktok].filter(Boolean);
 }

@@ -40,8 +40,6 @@ export function Footer() {
   const socials = [
     { href: settings.socialInstagram, label: "Instagram" },
     { href: settings.socialTiktok, label: "TikTok" },
-    { href: settings.socialFacebook, label: "Facebook" },
-    { href: settings.socialLinkedin, label: "LinkedIn" },
   ].filter((item) => Boolean(item.href));
 
   return (
