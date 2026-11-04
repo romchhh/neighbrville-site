@@ -99,8 +99,10 @@ function ProfileShell({
   onInvite: () => void;
 }) {
   return (
-    <div className="join-profile-shell relative box-border flex w-full flex-col gap-5 max-lg:pt-[var(--join-mobile-panel-top)] lg:grid lg:min-h-[var(--join-panel-height)] lg:grid-cols-2 lg:gap-0 lg:pt-0">
-      <div className="page-x relative z-10 flex w-full flex-col bg-cream py-8 pb-8 pt-7 text-chocolate sm:pb-9 sm:pt-8 lg:px-14 lg:py-12">
+    <div className="join-profile-shell relative box-border flex w-full flex-col gap-5 max-lg:pt-[var(--join-mobile-panel-top)] lg:grid lg:min-h-[var(--join-panel-height)] lg:grid-cols-2 lg:items-start lg:gap-0 lg:pt-0">
+      {/* Fixed panel height on desktop so invite copy doesn't shift when
+          the form dropdowns open/close and grow the right column. */}
+      <div className="page-x relative z-10 flex w-full flex-col bg-cream py-8 pb-8 pt-7 text-chocolate sm:pb-9 sm:pt-8 lg:h-[var(--join-panel-height)] lg:min-h-[var(--join-panel-height)] lg:px-14 lg:py-12">
         <button
           type="button"
           onClick={onBack}
@@ -144,7 +146,7 @@ function ProfileShell({
         </div>
       </div>
 
-      <div className="relative flex w-full flex-col justify-start px-[var(--page-gutter-x)] pb-8 pt-2 lg:justify-center lg:px-14 lg:pb-0 lg:pt-0">
+      <div className="relative flex w-full flex-col justify-start px-[var(--page-gutter-x)] pb-8 pt-2 lg:px-14 lg:pb-0 lg:pt-0">
         {children}
       </div>
     </div>
