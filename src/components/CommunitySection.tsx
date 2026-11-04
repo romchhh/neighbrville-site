@@ -139,6 +139,7 @@ export function CommunitySection() {
 
             <p className="mx-auto mt-1 max-w-[470px] font-inter text-[14px] font-normal leading-[1.35] text-ivory">
               NeighbrVille helps more people discover it! Whether you host events
+              <br />
               or contribute to your local life in broader ways, you belong here
             </p>
           </div>
@@ -208,8 +209,11 @@ export function CommunitySection() {
             Have events, spaces, or programs to offer?
           </p>
           <p className="mx-auto mt-2 max-w-[360px] font-inter text-[13px] font-normal leading-[1.35] text-ivory">
-            NeighbrVille helps more people discover it! Whether you host events
-            or contribute to your local life in broader ways, you belong here
+            NeighbrVille helps more people discover it! Whether you
+            <br />
+            host events or contribute to your local life in
+            <br />
+            broader ways, you belong here
           </p>
         </div>
 

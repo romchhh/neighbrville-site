@@ -11,7 +11,7 @@ const WARM_URLS = [
   "/images/hero/polaroid-03.webp",
   "/images/hero/polaroid-04.webp",
   "/images/hero/polaroid-05.webp",
-  "/images/sections/village-park.png",
+  "/images/sections/about-gathering-v2.png",
   "/images/sections/be-here.webp",
 ];
 

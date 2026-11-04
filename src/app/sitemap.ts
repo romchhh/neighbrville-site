@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       images: [
         absoluteUrl("/opengraph-image"),
         absoluteUrl("/images/sections/be-here.webp"),
-        absoluteUrl("/images/sections/village-park.png"),
+        absoluteUrl("/images/sections/about-gathering-v2.png"),
         absoluteUrl("/images/experiences/pottery.webp"),
         absoluteUrl("/images/experiences/pasta-night.webp"),
       ],

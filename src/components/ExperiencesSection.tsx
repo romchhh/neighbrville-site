@@ -572,10 +572,12 @@ export function ExperiencesSection() {
             </div>
 
             <div className="relative z-10 -mt-3 flex shrink-0 flex-col items-center px-1 text-center">
-              <p className="max-w-[34ch] font-inter text-[clamp(0.8125rem,3.4vw,0.9375rem)] font-normal leading-[1.35] text-ivory">
-                Your neighborhood is full of people doing interesting things,
-                places waiting to be discovered and initiatives bringing others
-                together
+              <p className="font-inter text-[clamp(0.8125rem,3.4vw,0.9375rem)] font-normal leading-[1.35] text-ivory">
+                Your neighborhood is full of people doing
+                <br />
+                interesting things, places waiting to be
+                <br />
+                discovered and initiatives bringing others together
               </p>
 
               <Link
@@ -656,16 +658,20 @@ export function ExperiencesSection() {
               </h2>
             </div>
 
-            {/* Bottom CTA — original position, width locked to the button */}
-            <div className="absolute bottom-6 left-[50px] z-20 flex w-max max-w-[min(100%,20rem)] flex-col items-stretch">
-              <p className="w-0 min-w-full font-inter text-[12px] font-normal leading-[1.3] text-ivory">
-                Discover events in different languages, practice a new language,
-                explore another culture, and learn through experience — all
-                without leaving your city
+            {/* Bottom CTA — 4 fixed lines, no orphan word */}
+            <div className="absolute bottom-6 left-[50px] z-20">
+              <p className="font-inter text-[12px] font-normal leading-[1.3] text-ivory">
+                Discover events in different languages,
+                <br />
+                practice a new language, explore
+                <br />
+                another culture, and learn through
+                <br />
+                experience — all without leaving your city
               </p>
               <Link
                 href="/?as=neighbr#join"
-                className={`mt-3 whitespace-nowrap text-[28px] underline-offset-[6px] ${ctaClass}`}
+                className={`mt-3 inline-block whitespace-nowrap text-[28px] underline-offset-[6px] ${ctaClass}`}
                 onClick={() => {
                   document.documentElement.classList.add("join-open");
                 }}

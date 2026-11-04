@@ -1,5 +1,5 @@
-/** Original asset restored as-is (no WebP / Next optimizer). Filename bumped to bust caches. */
-const parkSrc = "/images/sections/village-park.png";
+/** Raw PNG as uploaded — no Next/Image, no CSS filters. Filename bumps bust cache. */
+const parkSrc = "/images/sections/about-gathering-v2.png";
 
 export function ValueSection() {
   return (
@@ -7,14 +7,15 @@ export function ValueSection() {
       id="about"
       className="snap-block grid min-h-svh grid-cols-1 overflow-x-clip lg:min-h-[var(--screen)] lg:grid-cols-2 lg:items-stretch"
     >
-      <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
+      <div className="relative h-[42svh] min-h-[240px] bg-chocolate lg:h-auto lg:min-h-full">
         {/* eslint-disable-next-line @next/next/no-img-element -- keep original PNG unprocessed */}
         <img
           src={parkSrc}
           alt="Neighbors gathered in a circle in the park"
-          className="absolute inset-0 h-full w-full object-cover object-center brightness-[1.12]"
+          className="absolute inset-0 h-full w-full object-cover object-center"
           decoding="async"
           fetchPriority="low"
+          style={{ filter: "none" }}
         />
       </div>
 
@@ -44,33 +45,34 @@ export function ValueSection() {
             |
           </span>
           <span className="min-w-0 max-w-[50%] shrink text-right">
-            {/* Exactly two lines on mobile — nowrap so nothing orphans */}
-            <span className="lg:hidden">
-              <span className="block whitespace-nowrap">
-                yet many of us feel more
-              </span>
-              <span className="block whitespace-nowrap">
-                disconnected than before
-              </span>
+            <span className="block whitespace-nowrap">
+              yet many of us feel more
             </span>
-            <span className="hidden lg:inline">
-              yet many of us feel more disconnected than before
+            <span className="block whitespace-nowrap">
+              disconnected than before
             </span>
           </span>
         </div>
 
         <p className="relative z-10 mt-auto max-w-[34rem] shrink-0 font-inter text-[15px] leading-[1.35] text-chocolate lg:hidden">
-          NeighbrVille is a platform for discovering what your local community
-          has to offer. From workshops and hobby groups to cultural events and
-          local initiatives, find things to do, people to meet and ways to get
-          involved
+          NeighbrVille is a platform for discovering what your
+          <br />
+          local community has to offer. From workshops and
+          <br />
+          hobby groups to cultural events and local initiatives,
+          <br />
+          find things to do, people to meet and ways to get involved
         </p>
 
         <p className="relative z-10 mt-auto hidden max-w-[36rem] shrink-0 font-inter text-[15px] leading-[1.22] text-chocolate lg:block">
           NeighbrVille is a platform for discovering everything your local
+          <br />
           community has to offer. From creative workshops and hobby groups to
+          <br />
           cultural events and grassroots initiatives, find things to do, people
+          <br />
           to meet and organizations to discover. Explore your interests, get
+          <br />
           involved and be part of what makes your neighborhood unique.
         </p>
       </div>
