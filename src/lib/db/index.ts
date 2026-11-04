@@ -59,9 +59,6 @@ function initSchema(database: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_registrations_completed
       ON registrations (profile_completed);
 
-    CREATE INDEX IF NOT EXISTS idx_registrations_email_confirmed
-      ON registrations (email_confirmed);
-
     CREATE TABLE IF NOT EXISTS admin_sessions (
       token TEXT PRIMARY KEY,
       login TEXT NOT NULL,
@@ -90,7 +87,7 @@ function initSchema(database: Database.Database) {
       ON analytics_events (type);
   `);
 
-  // Existing local/prod DBs created before email confirmation.
+  // Existing DBs predate email confirmation — add columns before indexing.
   ensureColumn(
     database,
     "registrations",
@@ -98,6 +95,11 @@ function initSchema(database: Database.Database) {
     "INTEGER NOT NULL DEFAULT 0",
   );
   ensureColumn(database, "registrations", "email_confirmed_at", "TEXT");
+
+  database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_registrations_email_confirmed
+      ON registrations (email_confirmed);
+  `);
 }
 
 export function getDb() {
