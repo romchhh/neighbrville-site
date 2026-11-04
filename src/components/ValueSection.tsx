@@ -1,7 +1,10 @@
 import Image from "next/image";
 
+import { imageBlur } from "@/lib/image-blur";
+
 const subtitleLeft = "We live closer together than ever";
 const subtitleRight = "yet many of us feel more disconnected than before";
+const parkSrc = "/images/sections/park-community.webp";
 
 export function ValueSection() {
   return (
@@ -11,12 +14,15 @@ export function ValueSection() {
     >
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
         <Image
-          src="/images/sections/park-community.png"
+          src={parkSrc}
           alt="Neighbors gathered in a circle in the park"
           fill
           className="object-cover object-center brightness-[1.12]"
           sizes="(max-width: 1024px) 100vw, 50vw"
-          priority
+          quality={75}
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL={imageBlur[parkSrc]}
         />
       </div>
 

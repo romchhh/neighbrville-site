@@ -11,7 +11,8 @@
     "build:turbo": "next build --turbopack",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "optimize:images": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",

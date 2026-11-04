@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -103,10 +104,12 @@ export default function AdminLoginForm() {
       </div>
 
       <div className={styles.visual} aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/images/sections/be-here.png"
+        <Image
+          src="/images/sections/be-here.webp"
           alt=""
+          fill
+          sizes="(max-width: 960px) 100vw, 48vw"
+          quality={70}
           className={styles.visualImage}
         />
         <div className={styles.visualShade} />

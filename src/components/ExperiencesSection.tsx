@@ -28,7 +28,7 @@ const cards: ExperienceCard[] = [
     title: "Pottery for Beginners",
     meta: "Clay & Ceramics · Berlin",
     tag: "Beginner-friendly",
-    image: "/images/experiences/pottery.png",
+    image: "/images/experiences/pottery.webp",
     alt: "Hands shaping clay on a pottery wheel",
     line: (
       <>
@@ -47,7 +47,7 @@ const cards: ExperienceCard[] = [
     title: "Sunday Repair Café",
     meta: "Repair & Sustainability · London",
     tag: "Volunteer-led",
-    image: "/images/experiences/repair-cafe.png",
+    image: "/images/experiences/repair-cafe.webp",
     alt: "Neighbors repairing items together",
     line: (
       <>
@@ -66,7 +66,7 @@ const cards: ExperienceCard[] = [
     title: "Pasta Night with Neighbors",
     meta: "Food & Drink · London",
     tag: "Italian",
-    image: "/images/experiences/pasta-night.png",
+    image: "/images/experiences/pasta-night.webp",
     alt: "Friends making fresh pasta together",
     line: <>see your neighborhood</>,
     mobileLine: (
@@ -81,7 +81,7 @@ const cards: ExperienceCard[] = [
     title: "Neighborhood Photo Walk",
     meta: "Visual Arts · Berlin",
     tag: "Beginner-friendly",
-    image: "/images/experiences/photo-walk.png",
+    image: "/images/experiences/photo-walk.webp",
     alt: "Friends walking through a park at sunset",
     line: <em className={headingItalic}>differently</em>,
     mobileLine: <em className={headingItalic}>differently</em>,
@@ -299,7 +299,9 @@ function DesktopStack({
                 src={card.image}
                 alt={card.alt}
                 fill
-                sizes="30vw"
+                sizes="(max-width: 1024px) 40vw, 28vw"
+                quality={72}
+                loading="lazy"
                 className="object-cover"
               />
             </div>
@@ -368,7 +370,9 @@ function MobileStack({
                   src={card.image}
                   alt={isActive ? card.alt : ""}
                   fill
-                  sizes="70vw"
+                  sizes="(max-width: 480px) 78vw, 360px"
+                  quality={72}
+                  loading="lazy"
                   className="object-cover"
                 />
               </div>

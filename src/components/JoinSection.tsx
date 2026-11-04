@@ -325,11 +325,12 @@ function JoinSectionInner() {
         aria-hidden
       >
         <Image
-          src="/images/sections/be-here.png"
+          src="/images/sections/be-here.webp"
           alt=""
           fill
-          priority={false}
           sizes="100vw"
+          quality={75}
+          loading="lazy"
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/5 to-black/20" />

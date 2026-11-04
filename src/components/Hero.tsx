@@ -4,13 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { imageBlur } from "@/lib/image-blur";
+
 /*
   Desktop: `lift` and `ml` are fractions of the polaroid width (--pw),
   so the whole row scales together with the section.
 */
 const polaroids = [
   {
-    src: "/images/hero/polaroid-03.png",
+    src: "/images/hero/polaroid-03.webp",
     alt: "Neighbors grilling together outdoors",
     rotate: -14,
     lift: 0.004,
@@ -18,7 +20,7 @@ const polaroids = [
     zIndex: 1,
   },
   {
-    src: "/images/hero/polaroid-05.png",
+    src: "/images/hero/polaroid-05.webp",
     alt: "Friends gathered in a living room",
     rotate: -5,
     lift: 0,
@@ -26,7 +28,7 @@ const polaroids = [
     zIndex: 4,
   },
   {
-    src: "/images/hero/polaroid-02.png",
+    src: "/images/hero/polaroid-02.webp",
     alt: "Neighbors embracing at a gathering",
     rotate: 3,
     lift: 0.081,
@@ -34,7 +36,7 @@ const polaroids = [
     zIndex: 2,
   },
   {
-    src: "/images/hero/polaroid-01.png",
+    src: "/images/hero/polaroid-01.webp",
     alt: "Friends talking around a picnic table",
     rotate: 7,
     lift: 0.064,
@@ -42,7 +44,7 @@ const polaroids = [
     zIndex: 5,
   },
   {
-    src: "/images/hero/polaroid-04.png",
+    src: "/images/hero/polaroid-04.webp",
     alt: "Hands shaping clay on a pottery wheel",
     rotate: 10,
     lift: -0.162,
@@ -53,35 +55,35 @@ const polaroids = [
 
 const mobilePolaroids = [
   {
-    src: "/images/hero/polaroid-03.png",
+    src: "/images/hero/polaroid-03.webp",
     alt: "Neighbors grilling together outdoors",
     className: "left-[5%] top-[8.6%] w-[30.8%]",
     rotate: -12,
     zIndex: 1,
   },
   {
-    src: "/images/hero/polaroid-05.png",
+    src: "/images/hero/polaroid-05.webp",
     alt: "Friends gathered in a living room",
     className: "left-[33.5%] top-[1.2%] w-[31%]",
     rotate: 2,
     zIndex: 2,
   },
   {
-    src: "/images/hero/polaroid-01.png",
+    src: "/images/hero/polaroid-01.webp",
     alt: "Friends talking around a picnic table",
     className: "left-[62.5%] top-[10%] w-[30.8%]",
     rotate: 12,
     zIndex: 3,
   },
   {
-    src: "/images/hero/polaroid-02.png",
+    src: "/images/hero/polaroid-02.webp",
     alt: "Neighbors embracing at a gathering",
     className: "left-[18%] top-[41%] w-[35%]",
     rotate: -9,
     zIndex: 10,
   },
   {
-    src: "/images/hero/polaroid-04.png",
+    src: "/images/hero/polaroid-04.webp",
     alt: "Hands shaping clay on a pottery wheel",
     className: "left-[47.5%] top-[42%] w-[35%]",
     rotate: 7,
@@ -116,8 +118,11 @@ function PolaroidFrame({
           alt={alt}
           fill
           sizes={sizes}
+          quality={72}
           className="object-cover"
           priority={priority}
+          placeholder={imageBlur[src] ? "blur" : "empty"}
+          blurDataURL={imageBlur[src]}
         />
       </div>
     </div>
@@ -178,8 +183,8 @@ export function Hero() {
                     <PolaroidFrame
                       src={photo.src}
                       alt=""
-                      priority={index < 3}
-                      sizes="46vw"
+                      priority={index < 2}
+                      sizes="(max-width: 440px) 46vw, 200px"
                       compact
                     />
                   </button>
@@ -285,10 +290,13 @@ export function Hero() {
                           alt={photo.alt}
                           fill
                           sizes="(max-width: 1280px) 240px, 312px"
+                          quality={72}
                           className={`object-cover transition-transform duration-300 ease-out ${
                             isHovered ? "scale-105" : "scale-100"
                           }`}
-                          priority={index < 3}
+                          priority={index < 2}
+                          placeholder={imageBlur[photo.src] ? "blur" : "empty"}
+                          blurDataURL={imageBlur[photo.src]}
                         />
                       </div>
                     </div>

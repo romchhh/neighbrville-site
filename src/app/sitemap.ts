@@ -13,10 +13,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
       images: [
         absoluteUrl("/opengraph-image"),
-        absoluteUrl("/images/sections/be-here.png"),
-        absoluteUrl("/images/sections/park-community.png"),
-        absoluteUrl("/images/experiences/pottery.png"),
-        absoluteUrl("/images/experiences/pasta-night.png"),
+        absoluteUrl("/images/sections/be-here.webp"),
+        absoluteUrl("/images/sections/park-community.webp"),
+        absoluteUrl("/images/experiences/pottery.webp"),
+        absoluteUrl("/images/experiences/pasta-night.webp"),
       ],
     },
     {

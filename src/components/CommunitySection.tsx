@@ -6,47 +6,47 @@ import { useState, type CSSProperties } from "react";
 
 const photos = [
   {
-    src: "/images/community/library.png",
+    src: "/images/community/library.webp",
     alt: "Sunlit neighborhood bookshop",
     box: { left: "2.8%", top: "20.4%", width: "12%", height: "19.1%" },
   },
   {
-    src: "/images/community/circle.png",
+    src: "/images/community/circle.webp",
     alt: "Neighbors sitting together in a circle",
     box: { left: "24.4%", top: "11.6%", width: "12.8%", height: "14.2%" },
   },
   {
-    src: "/images/community/watercolor.png",
+    src: "/images/community/watercolor.webp",
     alt: "Hands painting with watercolors",
     box: { left: "52.9%", top: "8.6%", width: "14.5%", height: "12.6%" },
   },
   {
-    src: "/images/community/workshop.png",
+    src: "/images/community/workshop.webp",
     alt: "People gathered around a workshop table",
     box: { left: "88%", top: "16.8%", width: "11.1%", height: "18%" },
   },
   {
-    src: "/images/community/performance.png",
+    src: "/images/community/performance.webp",
     alt: "A neighbor performing on a rug",
     box: { left: "9.6%", top: "53.3%", width: "8.9%", height: "18.3%" },
   },
   {
-    src: "/images/community/books.png",
+    src: "/images/community/books.webp",
     alt: "Stacks of books on a wooden table",
     box: { left: "85.3%", top: "47.7%", width: "11.7%", height: "19.4%" },
   },
   {
-    src: "/images/community/makers.png",
+    src: "/images/community/makers.webp",
     alt: "A shared makers table under pendant lamps",
     box: { left: "25%", top: "70.1%", width: "14.6%", height: "12%" },
   },
   {
-    src: "/images/community/pottery.png",
+    src: "/images/community/pottery.webp",
     alt: "Hands shaping a clay pot",
     box: { left: "52.5%", top: "63.5%", width: "9.1%", height: "15.8%" },
   },
   {
-    src: "/images/community/repair.png",
+    src: "/images/community/repair.webp",
     alt: "Neighbors repairing things together",
     box: { left: "72.6%", top: "74.3%", width: "12.4%", height: "10.5%" },
   },
@@ -57,7 +57,7 @@ function InteractivePhoto({
   alt,
   className,
   style,
-  sizes = "280px",
+  sizes = "(max-width: 1024px) 28vw, 180px",
   shadow = "shadow-[0_14px_30px_rgba(0,0,0,0.28)]",
 }: {
   src: string;
@@ -88,7 +88,15 @@ function InteractivePhoto({
       aria-pressed={active}
       aria-label={alt}
     >
-      <Image src={src} alt="" fill sizes={sizes} className="object-cover" />
+      <Image
+        src={src}
+        alt=""
+        fill
+        sizes={sizes}
+        quality={70}
+        loading="lazy"
+        className="object-cover"
+      />
     </button>
   );
 }
@@ -153,22 +161,22 @@ export function CommunitySection() {
         <div className="relative z-0 mx-auto aspect-[440/240] w-full max-w-[440px]">
           {[
             {
-              src: "/images/community/circle.png",
+              src: "/images/community/circle.webp",
               alt: "Neighbors sitting together in a circle",
               className: "left-[22.7%] top-[0%] w-[26.1%] aspect-[3/2]",
             },
             {
-              src: "/images/community/workshop.png",
+              src: "/images/community/workshop.webp",
               alt: "People gathered around a workshop table",
               className: "left-[76.4%] top-[6%] w-[20%] aspect-square",
             },
             {
-              src: "/images/community/library.png",
+              src: "/images/community/library.webp",
               alt: "Sunlit neighborhood bookshop",
               className: "left-0 top-[36%] w-[21.8%] aspect-[96/93]",
             },
             {
-              src: "/images/community/watercolor.png",
+              src: "/images/community/watercolor.webp",
               alt: "Hands painting with watercolors",
               className: "left-[53.4%] top-[52%] w-[27.5%] aspect-[121/63]",
             },
@@ -211,27 +219,27 @@ export function CommunitySection() {
         <div className="relative z-0 mx-auto mt-12 aspect-[440/300] w-full max-w-[440px]">
           {[
             {
-              src: "/images/community/performance.png",
+              src: "/images/community/performance.webp",
               alt: "A neighbor performing on a rug",
               className: "left-[4.5%] top-[4%] w-[17.3%] aspect-[4/5]",
             },
             {
-              src: "/images/community/pottery.png",
+              src: "/images/community/pottery.webp",
               alt: "Hands shaping a clay pot",
               className: "left-[36.6%] top-[30%] w-[18%] aspect-square",
             },
             {
-              src: "/images/community/repair.png",
+              src: "/images/community/repair.webp",
               alt: "Neighbors repairing things together",
               className: "left-[67.5%] top-[12%] w-[33.6%] aspect-[37/20]",
             },
             {
-              src: "/images/community/makers.png",
+              src: "/images/community/makers.webp",
               alt: "A shared makers table under pendant lamps",
               className: "left-0 top-[68%] w-[38.4%] aspect-[2/1]",
             },
             {
-              src: "/images/community/books.png",
+              src: "/images/community/books.webp",
               alt: "Stacks of books on a wooden table",
               className: "left-[70.9%] top-[60%] w-[19.5%] aspect-square",
             },

@@ -1,6 +1,7 @@
 "use client";
 
 import type { AnalyticsEventType } from "@/lib/analytics/events";
+import { hasAnalyticsConsent } from "@/lib/cookie-consent";
 
 type TrackInput = {
   path?: string;
@@ -16,6 +17,7 @@ function currentPath() {
 
 export function track(type: AnalyticsEventType, input: TrackInput = {}) {
   if (typeof window === "undefined") return;
+  if (!hasAnalyticsConsent()) return;
 
   const body = {
     type,

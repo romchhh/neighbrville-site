@@ -1,57 +1,74 @@
+"use client";
+
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
-import { getSiteSettings } from "@/lib/admin/settings";
+import {
+  COOKIE_CONSENT_EVENT,
+  hasAnalyticsConsent,
+  type CookieConsentState,
+} from "@/lib/cookie-consent";
 
-export function SiteTags() {
-  const settings = getSiteSettings();
-  const gtmId = settings.gtmId.trim();
-  const gaId = settings.gaId.trim();
-  const adsId = settings.googleAdsId.trim();
+type MarketingIds = {
+  gtmId: string;
+  gaId: string;
+  adsId: string;
+};
+
+function useAnalyticsAllowed() {
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    setAllowed(hasAnalyticsConsent());
+
+    function onConsent(event: Event) {
+      const detail = (event as CustomEvent<CookieConsentState>).detail;
+      setAllowed(detail?.choice === "accepted");
+    }
+
+    window.addEventListener(COOKIE_CONSENT_EVENT, onConsent);
+    return () => window.removeEventListener(COOKIE_CONSENT_EVENT, onConsent);
+  }, []);
+
+  return allowed;
+}
+
+/** Loads GTM / gtag only after the visitor accepts analytics cookies. */
+export function SiteTags({ gtmId, gaId, adsId }: MarketingIds) {
+  const allowed = useAnalyticsAllowed();
+  const gtm = gtmId.trim();
+  const ga = gaId.trim();
+  const ads = adsId.trim();
+
+  if (!allowed) return null;
 
   return (
     <>
-      {gtmId ? (
+      {gtm ? (
         <Script id="gtm-loader" strategy="afterInteractive">{`
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${gtmId}');
+})(window,document,'script','dataLayer','${gtm}');
         `}</Script>
       ) : null}
 
-      {gaId || adsId ? (
+      {ga || ads ? (
         <>
           <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${gaId || adsId}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${ga || ads}`}
             strategy="afterInteractive"
           />
           <Script id="gtag-init" strategy="afterInteractive">{`
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-${gaId ? `gtag('config', '${gaId}');` : ""}
-${adsId ? `gtag('config', '${adsId}');` : ""}
+${ga ? `gtag('config', '${ga}');` : ""}
+${ads ? `gtag('config', '${ads}');` : ""}
           `}</Script>
         </>
       ) : null}
     </>
-  );
-}
-
-export function SiteTagsNoscript() {
-  const settings = getSiteSettings();
-  const gtmId = settings.gtmId.trim();
-  if (!gtmId) return null;
-  return (
-    <noscript>
-      <iframe
-        src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
-        height="0"
-        width="0"
-        style={{ display: "none", visibility: "hidden" }}
-        title="gtm"
-      />
-    </noscript>
   );
 }

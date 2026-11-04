@@ -2,9 +2,12 @@ import type { Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
 
+import { CookieConsent } from "@/components/CookieConsent";
 import { JsonLd, siteJsonLd } from "@/components/JsonLd";
 import { PageViewTracker } from "@/components/PageViewTracker";
-import { SiteTags, SiteTagsNoscript } from "@/components/SiteTags";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { SiteTags } from "@/components/SiteTags";
+import { getSiteSettings } from "@/lib/admin/settings";
 import { buildPageMetadata } from "@/lib/seo";
 
 import "./globals.css";
@@ -48,16 +51,23 @@ export default function SiteLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = getSiteSettings();
+
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${inter.variable} antialiased`}>
-        <SiteTags />
-        <SiteTagsNoscript />
+        <SiteTags
+          gtmId={settings.gtmId}
+          gaId={settings.gaId}
+          adsId={settings.googleAdsId}
+        />
         <JsonLd data={siteJsonLd()} />
         <Suspense fallback={null}>
+          <ScrollToTop />
           <PageViewTracker />
         </Suspense>
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

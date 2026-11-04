@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Display sizes on this site are modest (polaroids ~240–312px,
+    // community thumbs ~120–280px). Keep the optimizer lean.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [96, 128, 160, 256, 320, 384, 640],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+    qualities: [65, 72, 75, 80],
   },
   async headers() {
     return [
@@ -56,6 +62,15 @@ const nextConfig: NextConfig = {
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/_next/image",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=86400",
           },
         ],
       },
