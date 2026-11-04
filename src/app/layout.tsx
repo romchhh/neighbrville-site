@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { CookieConsent } from "@/components/CookieConsent";
 import { JsonLd, siteJsonLd } from "@/components/JsonLd";
+import { MediaCache } from "@/components/MediaCache";
 import { PageViewTracker } from "@/components/PageViewTracker";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SiteTags } from "@/components/SiteTags";
@@ -66,6 +67,7 @@ export default function SiteLayout({
           <ScrollToTop />
           <PageViewTracker />
         </Suspense>
+        <MediaCache />
         {children}
         <CookieConsent />
       </body>
