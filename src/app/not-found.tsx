@@ -22,7 +22,7 @@ export default function NotFound() {
         <section className="flex min-h-dvh flex-col overflow-x-clip bg-chocolate text-cream lg:min-h-[var(--screen)]">
           <Header />
 
-          <div className="page-shell page-x flex flex-1 flex-col items-start justify-center py-16 lg:py-24">
+          <div className="page-shell page-x flex flex-1 flex-col items-center justify-center py-16 text-center lg:py-24">
             <p className="font-inter text-[12px] uppercase tracking-[0.05em] text-cream/70">
               Error 404
             </p>

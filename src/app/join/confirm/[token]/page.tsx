@@ -40,7 +40,7 @@ export default async function JoinConfirmPage({ params }: PageProps) {
       <DisableScrollSnap />
       <Header />
       <main className="min-h-dvh overflow-x-clip bg-chocolate text-cream">
-        <section className="page-shell page-x flex flex-col items-start justify-center py-20 lg:min-h-[70svh] lg:py-28">
+        <section className="page-shell page-x flex flex-col items-center justify-center py-20 text-center lg:min-h-[70svh] lg:py-28">
           <p className="font-inter text-[11px] font-medium uppercase tracking-[0.16em] text-cream/70">
             Waitlist
           </p>
