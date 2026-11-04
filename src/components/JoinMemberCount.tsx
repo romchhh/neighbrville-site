@@ -67,7 +67,8 @@ export function JoinMemberCount({
 
   return (
     <>
-      You’re joining <span className={countClassName}>{display} people</span>{" "}
+      You’re joining <span className={countClassName}>{display} people</span>
+      <br />
       helping build NeighbrVille
     </>
   );

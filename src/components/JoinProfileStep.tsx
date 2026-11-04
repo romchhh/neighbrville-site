@@ -38,12 +38,12 @@ const profileCopy: Record<JoinRole, ProfileCopy> = {
     ),
     rightTitle: (
       <>
-        Make NeighbrVille
+        <span className="whitespace-nowrap">Make NeighbrVille</span>
         <br />
         more <span className="italic">personal</span>
       </>
     ),
-    bannerAlign: "right",
+    bannerAlign: "center",
     updateNote: "We’ll keep you updated as NeighbrVille grows in your city",
     invitePrompt: "Know someone who would love this too?",
     inviteCta: "Invite a Neighbr",
@@ -254,7 +254,7 @@ export function JoinProfileStep({
       >
         <div
           id="join-profile-done"
-          className="relative z-10 w-full max-w-[560px] bg-cream px-6 py-9 text-chocolate sm:px-8 sm:py-10 lg:px-10 lg:py-12"
+          className="relative z-10 w-full bg-cream px-6 py-9 text-chocolate sm:px-8 sm:py-10 lg:px-10 lg:py-12"
         >
           <h3 className="max-w-[14ch] font-playfair text-[clamp(1.85rem,6.5vw,2.4rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em]">
             Profile <span className="italic">complete</span>
@@ -291,7 +291,7 @@ export function JoinProfileStep({
       inviteCta={copy.inviteCta}
       onInvite={() => shareJoinInvite(role)}
     >
-      <h3 className="mb-6 max-w-[16ch] font-playfair text-[clamp(1.9rem,7.5vw,2.85rem)] font-normal uppercase leading-[0.9] tracking-[-0.045em] text-cream lg:mb-7 lg:max-w-[15ch] lg:text-[clamp(2rem,calc(2.7*var(--dvw)),2.85rem)]">
+      <h3 className="mb-6 max-w-[18ch] font-playfair text-[clamp(1.9rem,7.5vw,2.85rem)] font-normal uppercase leading-[0.9] tracking-[-0.045em] text-cream lg:mb-7 lg:max-w-[17ch] lg:text-[clamp(2rem,calc(2.7*var(--dvw)),2.85rem)]">
         {copy.rightTitle}
       </h3>
 

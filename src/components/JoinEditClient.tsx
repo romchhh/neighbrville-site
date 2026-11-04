@@ -107,7 +107,7 @@ export function JoinEditClient({ token }: JoinEditClientProps) {
                 Your waitlist details for {registration.email} are updated. We’ll
                 keep you posted as NeighbrVille grows.
               </p>
-              <p className="mt-10 bg-chocolate px-5 py-4 font-inter text-[13px] leading-[1.35] text-cream sm:text-[14px]">
+              <p className="mt-10 bg-chocolate px-5 py-4 text-center font-inter text-[13px] leading-[1.35] text-cream sm:text-[14px]">
                 <JoinMemberCount role={role} />
               </p>
               <Link
@@ -139,7 +139,7 @@ export function JoinEditClient({ token }: JoinEditClientProps) {
                 Update what you shared when you joined — this link is private to{" "}
                 <strong>{registration.email}</strong>.
               </p>
-              <p className="mt-10 bg-chocolate px-5 py-4 font-inter text-[13px] leading-[1.35] text-cream sm:text-[14px]">
+              <p className="mt-10 bg-chocolate px-5 py-4 text-center font-inter text-[13px] leading-[1.35] text-cream sm:text-[14px]">
                 <JoinMemberCount role={role} />
               </p>
             </div>

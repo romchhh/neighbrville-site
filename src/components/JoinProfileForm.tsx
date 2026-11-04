@@ -303,7 +303,7 @@ export function JoinProfileForm({
     <form
       id="join-profile-form"
       onSubmit={handleSubmit}
-      className="join-step-enter relative z-10 flex w-full max-w-[560px] flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 lg:px-10 lg:py-11"
+      className="join-step-enter relative z-10 flex w-full flex-col bg-cream px-6 py-8 text-chocolate sm:px-8 sm:py-9 lg:px-10 lg:py-11"
     >
       {isNeighbr ? (
         <div className="space-y-8 sm:space-y-9">
@@ -385,7 +385,7 @@ export function JoinProfileForm({
         <button
           type="submit"
           disabled={submitting}
-          className="text-left font-playfair text-[clamp(1.5rem,6vw,1.95rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 disabled:opacity-50 lg:text-[clamp(1.55rem,calc(2.2*var(--dvw)),2.15rem)]"
+          className="whitespace-nowrap text-left font-playfair text-[clamp(1.5rem,6vw,1.95rem)] uppercase italic leading-none tracking-[-0.03em] underline decoration-[1px] underline-offset-[8px] transition-opacity hover:opacity-80 disabled:opacity-50 lg:text-[clamp(1.55rem,calc(2.2*var(--dvw)),2.15rem)]"
         >
           {submitting ? "Saving…" : submitLabel}
         </button>

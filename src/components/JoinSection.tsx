@@ -364,9 +364,9 @@ function JoinSectionInner() {
               </ul>
               <p className={cardDesc}>
                 Want to discover new experiences,
-                <span className="max-lg:hidden"> my</span>
+                <span className="max-lg:hidden"> your</span>
                 <br />
-                <span className="lg:hidden">my </span>people, my neighborhood?
+                <span className="lg:hidden">your </span>people, your neighborhood?
               </p>
               <button
                 type="button"
