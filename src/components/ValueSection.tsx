@@ -54,22 +54,8 @@ export function ValueSection() {
           </span>
         </div>
 
-        <p className="relative z-10 mt-auto max-w-[34rem] shrink-0 font-inter text-[clamp(0.8125rem,3.55vw,0.9375rem)] leading-[1.35] text-chocolate lg:hidden">
-          <span className="block whitespace-nowrap">
-            NeighbrVille is a platform for discovering what
-          </span>
-          <span className="block whitespace-nowrap">
-            your local community has to offer. From workshops
-          </span>
-          <span className="block whitespace-nowrap">
-            and hobby groups to cultural events and local
-          </span>
-          <span className="block whitespace-nowrap">
-            initiatives, find things to do, people to meet and ways to get involved
-          </span>
-        </p>
-
-        <p className="relative z-10 mt-auto hidden max-w-[36rem] shrink-0 font-inter text-[15px] leading-[1.22] text-chocolate lg:block">
+        {/* Full copy on all breakpoints — mobile just uses a smaller size */}
+        <p className="relative z-10 mt-auto max-w-[36rem] shrink-0 font-inter text-[clamp(0.75rem,3.2vw,0.875rem)] leading-[1.3] text-chocolate lg:text-[15px] lg:leading-[1.22]">
           NeighbrVille is a platform for discovering everything your local
           <br />
           community has to offer. From creative workshops and hobby groups
