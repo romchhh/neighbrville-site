@@ -121,7 +121,7 @@ export function resolveResendConfig() {
     from:
       settings.resendFrom ||
       process.env.RESEND_FROM ||
-      `NeighbrVille <hello@${process.env.RESEND_DOMAIN ?? "resend.dev"}>`,
+      `NeighbrVille <info@${process.env.RESEND_DOMAIN ?? "neighbrville.com"}>`,
   };
 }
 

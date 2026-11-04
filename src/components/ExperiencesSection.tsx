@@ -41,7 +41,7 @@ const cards: ExperienceCard[] = [
       </>
     ),
     desktop: { left: 11.53, top: 2.5, rotate: -3.5 },
-    mobile: { left: 11, top: 4.5, rotate: -5 },
+    mobile: { left: 3, top: 4.5, rotate: -5 },
   },
   {
     title: "Sunday Repair Café",
@@ -60,7 +60,7 @@ const cards: ExperienceCard[] = [
       </>
     ),
     desktop: { left: 12.24, top: 15.5, rotate: 4.1 },
-    mobile: { left: 17.9, top: 9.5, rotate: 2.5 },
+    mobile: { left: 9, top: 9.5, rotate: 2.5 },
   },
   {
     title: "Pasta Night with Neighbors",
@@ -74,8 +74,8 @@ const cards: ExperienceCard[] = [
         see your <em className={headingAccentEm}>community</em>
       </>
     ),
-    desktop: { left: 4.27, top: 26.2, rotate: -6.4 },
-    mobile: { left: 21.5, top: 17, rotate: -5.5 },
+    desktop: { left: 11.2, top: 26.2, rotate: -6.4 },
+    mobile: { left: 11, top: 17, rotate: -5.5 },
   },
   {
     title: "Neighborhood Photo Walk",
@@ -86,13 +86,12 @@ const cards: ExperienceCard[] = [
     line: <em className={headingItalic}>differently</em>,
     mobileLine: <em className={headingItalic}>differently</em>,
     desktop: { left: 12.14, top: 36.8, rotate: 4.75 },
-    mobile: { left: 20.4, top: 22.5, rotate: 3 },
+    mobile: { left: 10, top: 22.5, rotate: 3 },
   },
 ];
 
-/** One pinned viewport per card; scroll distance = (n − 1) steps between cards. */
+/** One pinned viewport per card on desktop; mobile adds extra scroll room. */
 const EXPERIENCE_SCROLL_SCREENS = cards.length;
-const EXPERIENCE_SCROLL_STEPS = cards.length - 1;
 
 const cardShadow = "shadow-[0_14px_34px_rgba(0,0,0,0.4)]";
 const smoothRender =
@@ -231,9 +230,7 @@ function DesktopStack({
   onHover: (index: number | null) => void;
 }) {
   return (
-    <div
-      className="absolute left-[45cqw] top-[3cqw] aspect-[850/760] w-[54.6cqw]"
-    >
+    <div className="absolute left-[45cqw] top-[3cqw] aspect-[850/760] w-[54.6cqw]">
       {cards.map((card, index) => {
         const isActive = activeIndex === index;
         const motion = cardStackMotion(
@@ -332,7 +329,7 @@ function MobileStack({
           progress,
           card.mobile,
           isActive,
-          { left: 18, top: 22, rotateBoost: index % 2 === 0 ? 11 : -11 },
+          { left: 6, top: 22, rotateBoost: index % 2 === 0 ? 11 : -11 },
         );
 
         return (
@@ -443,17 +440,22 @@ export function ExperiencesSection() {
     };
 
     const pinPanel = section.querySelector<HTMLElement>("[data-experiences-pin]");
-
-    const readViewportHeight = () => {
-      if (pinPanel?.clientHeight) return pinPanel.clientHeight;
-      return window.innerHeight;
-    };
+    const mobilePin = section.querySelector<HTMLElement>(
+      "[data-experiences-mobile-pin]",
+    );
 
     const update = () => {
       const rect = section.getBoundingClientRect();
-      const vh = readViewportHeight();
       const pinTop = readPinTop();
-      const scrollSpan = Math.max(vh * EXPERIENCE_SCROLL_STEPS, 1);
+      const desktop = window.matchMedia("(min-width: 1024px)").matches;
+      const stickyEl = desktop ? pinPanel : mobilePin;
+      const stickyHeight =
+        stickyEl && stickyEl.offsetHeight > 0
+          ? stickyEl.offsetHeight
+          : window.innerHeight;
+      // Map the full sticky travel to 0→1 so the last card finishes
+      // before the section unpins (mobile content is taller than 1 screen).
+      const scrollSpan = Math.max(section.offsetHeight - stickyHeight, 1);
 
       if (rect.top > pinTop + 0.5) {
         setProgress((current) => (current === 0 ? current : 0));
@@ -504,7 +506,8 @@ export function ExperiencesSection() {
       className={`relative bg-chocolate text-cream max-lg:overflow-visible lg:isolate lg:z-0 ${
         reduceMotion
           ? "snap-block"
-          : "h-[calc((100svh-var(--header-space))*var(--experience-screens))] lg:h-[calc((var(--screen)-var(--header-space))*var(--experience-screens))] lg:snap-start lg:snap-always"
+          : // Mobile needs extra scroll room so card 4 finishes before unpin.
+            "h-[calc((100svh-var(--header-space))*(var(--experience-screens)+1.35))] lg:h-[calc((var(--screen)-var(--header-space))*var(--experience-screens))] lg:snap-start lg:snap-always"
       }`}
     >
       <span className="sr-only">
@@ -513,14 +516,15 @@ export function ExperiencesSection() {
       </span>
 
       <div
+        data-experiences-mobile-pin
         className={
           reduceMotion
             ? "relative z-0 bg-chocolate lg:hidden"
-            : "sticky top-[var(--header-space)] z-0 bg-chocolate lg:hidden"
+            : "sticky top-[var(--header-space)] z-0 flex min-h-[calc(100svh-var(--header-space))] flex-col justify-between bg-chocolate lg:hidden"
         }
       >
         <div className="page-shell mx-auto w-full max-w-[520px] overflow-visible [container-type:inline-size]">
-          <div className="page-x flex flex-col items-stretch overflow-visible pb-2 pt-[2.5svh] text-left">
+          <div className="page-x flex flex-col items-stretch overflow-visible pb-2 pt-[5.5svh] text-left">
             <p className="shrink-0 text-center font-inter text-[clamp(11px,2.9vw,13px)] font-normal uppercase leading-none tracking-[0.03em] text-ivory">
               Find something that feels like you
             </p>
@@ -568,7 +572,7 @@ export function ExperiencesSection() {
             </div>
 
             <div className="relative z-10 -mt-3 flex shrink-0 flex-col items-center px-1 text-center">
-              <p className="max-w-[34ch] font-inter text-[clamp(1rem,4.15vw,1.125rem)] font-normal leading-[1.32] text-ivory">
+              <p className="max-w-[34ch] font-inter text-[clamp(0.8125rem,3.4vw,0.9375rem)] font-normal leading-[1.35] text-ivory">
                 Your neighborhood is full of people doing interesting things,
                 places waiting to be discovered and initiatives bringing others
                 together
@@ -598,78 +602,93 @@ export function ExperiencesSection() {
         }
       >
         <div className="absolute inset-0 overflow-hidden">
-        <p className="absolute left-[50px] top-[88px] z-20 text-left font-inter text-[13px] font-normal uppercase leading-none text-ivory">
-          Find something that feels like you
-        </p>
+          <div className="page-shell relative mx-auto h-full min-h-0 px-[50px] [container-type:inline-size]">
+            {/*
+              Heading only — top matches the first card
+              (cards wrapper top-8 + stack top 3cqw + card top 2.5%).
+            */}
+            <div className="absolute left-[50px] top-[calc(2rem+3cqw+1.2cqw)] z-20 w-[min(42%,34rem)] overflow-visible">
+              <p className="text-left font-inter text-[13px] font-normal uppercase leading-none text-ivory">
+                Find something that feels like you
+              </p>
 
-        <h2
-          className={`absolute left-[50px] top-[116px] z-20 text-left font-playfair text-[60px] font-normal uppercase leading-[0.9] tracking-[-0.07em] ${headingBase}`}
-        >
-          {cards.map((card, index) => {
-            const isActive = activeIndex === index;
-            const isRevealed = index <= scrollIndex;
-
-            return (
-              <button
-                key={card.title}
-                type="button"
-                disabled={!canSwitchCards}
-                className={`whitespace-nowrap ${headlineLineClass(
-                  isActive,
-                  isRevealed,
-                  canSwitchCards,
-                )}`}
-                onMouseEnter={() => {
-                  if (canSwitchCards) setHovered(index);
-                }}
-                onMouseLeave={() => {
-                  if (canSwitchCards) setHovered(null);
-                }}
-                onFocus={() => {
-                  if (canSwitchCards) setHovered(index);
-                }}
-                onBlur={() => {
-                  if (canSwitchCards) setHovered(null);
-                }}
-                onClick={() => {
-                  if (!canSwitchCards) return;
-                  setHovered((current) => (current === index ? null : index));
-                }}
-                aria-pressed={isActive}
+              <h2
+                className={`mt-3 text-left font-playfair text-[clamp(2.4rem,calc(4.15*var(--dvw)),60px)] font-normal uppercase leading-[0.9] tracking-[-0.07em] ${headingBase}`}
               >
-                {card.line}
-              </button>
-            );
-          })}
-        </h2>
+                {cards.map((card, index) => {
+                  const isActive = activeIndex === index;
+                  const isRevealed = index <= scrollIndex;
 
-        <div className="page-shell relative z-0 w-full self-start overflow-visible pb-[calc(clamp(2rem,5vh,3.5rem)/var(--page-scale))] [container-type:inline-size]">
-          <div className="relative" style={{ height: "max(48cqw, 560px)" }}>
-            <DesktopStack
-              progress={motionProgress}
-              activeIndex={activeIndex}
-              canSwitchCards={canSwitchCards}
-              onHover={setHovered}
-            />
+                  return (
+                    <button
+                      key={card.title}
+                      type="button"
+                      disabled={!canSwitchCards}
+                      className={`block whitespace-nowrap ${headlineLineClass(
+                        isActive,
+                        isRevealed,
+                        canSwitchCards,
+                      )}`}
+                      onMouseEnter={() => {
+                        if (canSwitchCards) setHovered(index);
+                      }}
+                      onMouseLeave={() => {
+                        if (canSwitchCards) setHovered(null);
+                      }}
+                      onFocus={() => {
+                        if (canSwitchCards) setHovered(index);
+                      }}
+                      onBlur={() => {
+                        if (canSwitchCards) setHovered(null);
+                      }}
+                      onClick={() => {
+                        if (!canSwitchCards) return;
+                        setHovered((current) =>
+                          current === index ? null : index,
+                        );
+                      }}
+                      aria-pressed={isActive}
+                    >
+                      {card.line}
+                    </button>
+                  );
+                })}
+              </h2>
+            </div>
+
+            {/* Bottom CTA — original position, width locked to the button */}
+            <div className="absolute bottom-6 left-[50px] z-20 flex w-max max-w-[min(100%,20rem)] flex-col items-stretch">
+              <p className="w-0 min-w-full font-inter text-[12px] font-normal leading-[1.3] text-ivory">
+                Discover events in different languages, practice a new language,
+                explore another culture, and learn through experience — all
+                without leaving your city
+              </p>
+              <Link
+                href="/?as=neighbr#join"
+                className={`mt-3 whitespace-nowrap text-[28px] underline-offset-[6px] ${ctaClass}`}
+                onClick={() => {
+                  document.documentElement.classList.add("join-open");
+                }}
+              >
+                Join the waitlist
+              </Link>
+            </div>
+
+            {/* Cards — original vertical position & sizing */}
+            <div
+              className="pointer-events-none absolute inset-x-[50px] top-8 z-0 overflow-visible [container-type:inline-size]"
+              style={{ height: "max(48cqw, 560px)" }}
+            >
+              <div className="pointer-events-auto relative h-full w-full">
+                <DesktopStack
+                  progress={motionProgress}
+                  activeIndex={activeIndex}
+                  canSwitchCards={canSwitchCards}
+                  onHover={setHovered}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="absolute bottom-6 left-[50px] z-20 max-w-[28rem]">
-          <p className="font-inter text-[14px] font-normal leading-[1.25] text-ivory">
-            Discover events in different languages, practice a new language,
-            explore another culture, and learn through experience — all without
-            leaving your city
-          </p>
-          <Link
-            href="/?as=neighbr#join"
-            className={`mt-3 inline-block text-[28px] underline-offset-[6px] ${ctaClass}`}
-            onClick={() => {
-              document.documentElement.classList.add("join-open");
-            }}
-          >
-            Join the waitlist
-          </Link>
-        </div>
         </div>
       </div>
     </section>

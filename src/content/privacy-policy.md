@@ -238,7 +238,7 @@ When we have no ongoing legitimate business need to process your personal inform
 
 In Short: We do not knowingly collect data from or market to children under 18 years of age.
 
-We do not knowingly collect, solicit data from, or market to children under 18 years of age, nor do we knowingly sell such personal information. By using the Services, you represent that you are at least 18 or that you are the parent or guardian of such a minor and consent to such minor dependent’s use of the Services. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we may have collected from children under age 18, please contact us at [hello@neighbrville.com](mailto:hello@neighbrville.com).
+We do not knowingly collect, solicit data from, or market to children under 18 years of age, nor do we knowingly sell such personal information. By using the Services, you represent that you are at least 18 or that you are the parent or guardian of such a minor and consent to such minor dependent’s use of the Services. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we may have collected from children under age 18, please contact us at [info@neighbrville.com](mailto:info@neighbrville.com).
 
 ## 9. WHAT ARE YOUR PRIVACY RIGHTS?
 
@@ -306,7 +306,7 @@ We may update this Privacy Notice from time to time. The updated version will be
 
 ## 12. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
 
-If you have questions or comments about this notice, you may contact our Data Protection Officer (DPO) by email at [hello@neighbrville.com](mailto:hello@neighbrville.com), or contact us by post at:
+If you have questions or comments about this notice, you may contact our Data Protection Officer (DPO) by email at [info@neighbrville.com](mailto:info@neighbrville.com), or contact us by post at:
 
 NeighbrVille LTD
 

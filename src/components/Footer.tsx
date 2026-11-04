@@ -36,7 +36,7 @@ function DesktopColumn({
 
 export function Footer() {
   const settings = getSiteSettings();
-  const email = settings.email || "hello@neighbrville.com";
+  const email = settings.email || "info@neighbrville.com";
   const socials = [
     { href: settings.socialInstagram, label: "Instagram" },
     { href: settings.socialTiktok, label: "TikTok" },
@@ -44,7 +44,7 @@ export function Footer() {
 
   return (
     <footer className="relative z-30 snap-block isolate overflow-hidden bg-cream text-chocolate">
-      <div className="page-shell page-x relative z-10 flex flex-col gap-10 py-14 lg:grid lg:min-h-[17.5rem] lg:grid-cols-[minmax(0,0.7fr)_minmax(0,0.75fr)_minmax(0,1fr)_minmax(0,2.2fr)] lg:items-stretch lg:gap-x-14 lg:py-16">
+      <div className="page-shell page-x relative z-10 flex flex-col gap-10 pb-6 pt-14 lg:grid lg:min-h-[17.5rem] lg:grid-cols-[minmax(0,0.7fr)_minmax(0,0.75fr)_minmax(0,1fr)_minmax(0,2.2fr)] lg:items-stretch lg:pb-4 lg:pt-16">
         <DesktopColumn title="Menu">
           <ul className={`${columnTitleGap} flex flex-col ${columnListGap}`}>
             {menu.map((item) => (

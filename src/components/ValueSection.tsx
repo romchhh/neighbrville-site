@@ -1,10 +1,5 @@
-import Image from "next/image";
-
-import { imageBlur } from "@/lib/image-blur";
-
-const subtitleLeft = "We live closer together than ever";
-const subtitleRight = "yet many of us feel more disconnected than before";
-const parkSrc = "/images/sections/park-community.webp";
+/** Original asset restored as-is (no WebP / Next optimizer). Filename bumped to bust caches. */
+const parkSrc = "/images/sections/village-park.png";
 
 export function ValueSection() {
   return (
@@ -13,26 +8,24 @@ export function ValueSection() {
       className="snap-block grid min-h-svh grid-cols-1 overflow-x-clip lg:min-h-[var(--screen)] lg:grid-cols-2 lg:items-stretch"
     >
       <div className="relative h-[42svh] min-h-[240px] lg:h-auto lg:min-h-full">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element -- keep original PNG unprocessed */}
+        <img
           src={parkSrc}
           alt="Neighbors gathered in a circle in the park"
-          fill
-          className="object-cover object-center brightness-[1.12]"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          quality={75}
-          loading="lazy"
-          placeholder="blur"
-          blurDataURL={imageBlur[parkSrc]}
+          className="absolute inset-0 h-full w-full object-cover object-center brightness-[1.12]"
+          decoding="async"
+          fetchPriority="low"
         />
       </div>
 
       <div className="page-x relative flex min-h-[58svh] flex-col bg-cream py-8 text-chocolate lg:h-full lg:min-h-[var(--screen)] lg:px-[50px] lg:py-[50px]">
         <h2 className="relative z-10 shrink-0 font-playfair text-[clamp(1.85rem,8.4vw,2.55rem)] font-normal uppercase leading-[0.92] tracking-[-0.045em] lg:text-[length:var(--section-title)] lg:leading-[0.9]">
+          {/* Mobile: “A” of “a village” starts the second line */}
           <span className="block lg:hidden">
-            A <span className="italic">city</span> can feel like a
+            A <span className="italic">city</span> can feel like
           </span>
           <span className="block lg:hidden">
-            <span className="italic">village</span> again
+            a <span className="italic">village</span> again
           </span>
           <span className="hidden whitespace-nowrap lg:block">
             A <span className="italic">city</span> can feel like
@@ -42,12 +35,28 @@ export function ValueSection() {
           </span>
         </h2>
 
-        <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-2 font-inter text-[clamp(0.5625rem,2.55vw,0.8125rem)] uppercase leading-[1.25] tracking-[0.02em] text-chocolate sm:gap-3 sm:tracking-[0.03em] lg:gap-4 lg:pr-10 lg:text-[13px]">
-          <span className="max-w-[42%] shrink text-left">{subtitleLeft}</span>
+        <div className="relative z-[1] flex min-h-0 flex-1 items-center justify-between gap-1.5 font-inter text-[clamp(0.5rem,2.35vw,0.8125rem)] uppercase leading-[1.25] tracking-[0.01em] text-chocolate sm:gap-3 sm:tracking-[0.03em] lg:gap-4 lg:pr-10 lg:text-[13px] lg:tracking-[0.02em]">
+          <span className="min-w-0 max-w-[46%] shrink text-left">
+            <span className="block whitespace-nowrap">We live closer together</span>
+            <span className="block whitespace-nowrap">than ever</span>
+          </span>
           <span className="shrink-0 px-0.5" aria-hidden>
             |
           </span>
-          <span className="max-w-[42%] shrink text-right">{subtitleRight}</span>
+          <span className="min-w-0 max-w-[50%] shrink text-right">
+            {/* Exactly two lines on mobile — nowrap so nothing orphans */}
+            <span className="lg:hidden">
+              <span className="block whitespace-nowrap">
+                yet many of us feel more
+              </span>
+              <span className="block whitespace-nowrap">
+                disconnected than before
+              </span>
+            </span>
+            <span className="hidden lg:inline">
+              yet many of us feel more disconnected than before
+            </span>
+          </span>
         </div>
 
         <p className="relative z-10 mt-auto max-w-[34rem] shrink-0 font-inter text-[15px] leading-[1.35] text-chocolate lg:hidden">

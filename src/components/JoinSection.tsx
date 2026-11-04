@@ -67,7 +67,7 @@ const formCopy: Record<JoinRole, { title: ReactNode; footer: [string, string] }>
   };
 
 const cardTitle =
-  "absolute left-[calc(12*var(--u))] top-[calc(18*var(--u))] font-inter font-semibold uppercase leading-[1.3] tracking-[0.04em] text-[length:max(10px,calc(7.2*var(--u)))] lg:left-[calc(25*var(--u))] lg:top-[calc(24*var(--u))] lg:leading-[1.35] lg:text-[length:max(11px,calc(12.5*var(--u)))]";
+  "absolute left-[calc(12*var(--u))] top-[calc(18*var(--u))] whitespace-nowrap font-inter font-semibold uppercase leading-[1.3] tracking-[0.04em] text-[length:max(10px,calc(7.2*var(--u)))] lg:left-[calc(25*var(--u))] lg:top-[calc(24*var(--u))] lg:leading-[1.35] lg:text-[length:max(11px,calc(12.5*var(--u)))]";
 
 const cardList =
   "absolute left-[calc(12*var(--u))] top-[calc(46*var(--u))] list-disc whitespace-nowrap pl-[calc(12*var(--u))] font-inter leading-[1.2] text-[length:max(10px,calc(7.2*var(--u)))] lg:left-[calc(25*var(--u))] lg:top-[calc(83*var(--u))] lg:pl-[calc(17*var(--u))] lg:leading-[1.15] lg:text-[length:max(11px,calc(10.5*var(--u)))]";
@@ -379,10 +379,7 @@ function JoinSectionInner() {
             </article>
 
             <article className="relative h-[calc(172*var(--u))] bg-cream text-chocolate lg:h-[calc(279*var(--u))]">
-              <h3 className={cardTitle}>
-                Benefits for Hosts
-                <br className="max-lg:hidden" /> and Partners
-              </h3>
+              <h3 className={cardTitle}>Benefits for Hosts and Partners</h3>
               <ul className={cardList}>
                 {partnerBenefits.map((item) => (
                   <li key={item}>{item}</li>

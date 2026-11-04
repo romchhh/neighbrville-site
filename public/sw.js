@@ -1,5 +1,5 @@
 /* NeighbrVille media service worker — cache-first for images & optimized assets. */
-const CACHE_NAME = "nv-media-v2";
+const CACHE_NAME = "nv-media-v3";
 const MEDIA_PATHS = ["/images/", "/brand/", "/_next/image", "/_next/static/media"];
 
 self.addEventListener("install", (event) => {

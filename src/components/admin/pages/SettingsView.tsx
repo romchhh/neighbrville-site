@@ -278,7 +278,7 @@ export default function SettingsView() {
                 onChange={(e) =>
                   setSettings({ ...settings, resendFrom: e.target.value })
                 }
-                placeholder="NeighbrVille <hello@yourdomain.com>"
+                placeholder="NeighbrVille <info@neighbrville.com>"
               />
             </Field>
           </div>

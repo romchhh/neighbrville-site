@@ -56,7 +56,7 @@ export function FooterWordmark() {
   return (
     <div
       ref={wrapRef}
-      className="relative z-10 mt-10 w-full pb-[env(safe-area-inset-bottom,0px)] lg:mt-12"
+      className="relative z-10 -mt-1 w-full pb-[env(safe-area-inset-bottom,0px)] lg:mt-0"
     >
       <p
         ref={textRef}

@@ -23,7 +23,7 @@ const photos = [
   {
     src: "/images/community/workshop.webp",
     alt: "People gathered around a workshop table",
-    box: { left: "88%", top: "16.8%", width: "11.1%", height: "18%" },
+    box: { left: "83.5%", top: "16.8%", width: "11.1%", height: "18%" },
   },
   {
     src: "/images/community/performance.webp",
@@ -118,7 +118,7 @@ export function CommunitySection() {
             />
           ))}
 
-          <div className="pointer-events-none absolute inset-x-[10%] top-[26%] z-20 text-center">
+          <div className="pointer-events-none absolute inset-x-[10%] top-[30%] z-20 text-center">
             <p className="font-inter text-[12px] font-normal uppercase tracking-[0.06em] text-ivory">
               Built by the neighborhood
             </p>
@@ -156,9 +156,8 @@ export function CommunitySection() {
       </div>
 
       <div className="overflow-x-clip pb-10 pt-6 lg:hidden">
-        {/* Top photo cluster — reserved height so absolute photos can't
-            collide with the copy below even when they scale up. */}
-        <div className="relative z-0 mx-auto aspect-[440/240] w-full max-w-[440px]">
+        {/* Top photo cluster — tighter frame so copy sits closer */}
+        <div className="relative z-0 mx-auto aspect-[440/210] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/circle.webp",
@@ -168,17 +167,17 @@ export function CommunitySection() {
             {
               src: "/images/community/workshop.webp",
               alt: "People gathered around a workshop table",
-              className: "left-[76.4%] top-[6%] w-[20%] aspect-square",
+              className: "left-[76.4%] top-[4%] w-[20%] aspect-square",
             },
             {
               src: "/images/community/library.webp",
               alt: "Sunlit neighborhood bookshop",
-              className: "left-0 top-[36%] w-[21.8%] aspect-[96/93]",
+              className: "left-0 top-[38%] w-[21.8%] aspect-[96/93]",
             },
             {
               src: "/images/community/watercolor.webp",
               alt: "Hands painting with watercolors",
-              className: "left-[53.4%] top-[52%] w-[27.5%] aspect-[121/63]",
+              className: "left-[53.4%] top-[58%] w-[27.5%] aspect-[121/63]",
             },
           ].map((photo) => (
             <InteractivePhoto
@@ -192,7 +191,7 @@ export function CommunitySection() {
           ))}
         </div>
 
-        <div className="page-x relative z-10 mx-auto mt-8 max-w-[420px] text-center">
+        <div className="page-x relative z-10 mx-auto mt-3 max-w-[420px] text-center">
           <p className="font-inter text-[11px] font-normal uppercase tracking-[0.05em] text-ivory">
             Built by the neighborhood
           </p>
@@ -214,9 +213,8 @@ export function CommunitySection() {
           </p>
         </div>
 
-        {/* Bottom photo cluster — starts below the copy, with its own
-            reserved frame so these photos never climb into the text. */}
-        <div className="relative z-0 mx-auto mt-12 aspect-[440/300] w-full max-w-[440px]">
+        {/* Bottom photo cluster — closer under the copy */}
+        <div className="relative z-0 mx-auto mt-2 aspect-[440/300] w-full max-w-[440px]">
           {[
             {
               src: "/images/community/performance.webp",

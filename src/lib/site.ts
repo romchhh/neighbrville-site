@@ -13,7 +13,7 @@ export const siteConfig = {
     "",
   ),
   locale: "en_US",
-  email: "hello@neighbrville.com",
+  email: "info@neighbrville.com",
   launch: "Early 2027",
   cities: ["London", "Berlin"] as const,
   ogImage: "/opengraph-image",
