@@ -17,41 +17,57 @@ const TABS = [
   "Notifications",
 ] as const;
 
+function normalizeClientSettings(settings: SiteSettings): SiteSettings {
+  return {
+    ...settings,
+    registrationNotifyEmails: Array.isArray(settings.registrationNotifyEmails)
+      ? settings.registrationNotifyEmails
+      : [],
+  };
+}
+
 export default function SettingsView() {
   const [tab, setTab] = useState<(typeof TABS)[number]>("General");
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [hasResendKey, setHasResendKey] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [notifyDraft, setNotifyDraft] = useState("");
   const [notifyError, setNotifyError] = useState<string | null>(null);
   const [testingNotify, setTestingNotify] = useState(false);
   const [testNotifyMessage, setTestNotifyMessage] = useState<string | null>(
     null,
   );
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     void adminFetch<{ settings: SiteSettings; hasResendKey?: boolean }>(
       "/api/admin/settings",
     ).then((data) => {
-      setSettings(data.settings);
+      setSettings(normalizeClientSettings(data.settings));
       setHasResendKey(Boolean(data.hasResendKey));
+      setDirty(false);
     });
   }, []);
 
-  async function save() {
-    if (!settings) return;
+  async function save(nextSettings?: SiteSettings) {
+    const payload = nextSettings
+      ? normalizeClientSettings(nextSettings)
+      : settings
+        ? normalizeClientSettings(settings)
+        : null;
+    if (!payload) return null;
     setSaving(true);
-    setSaved(false);
+    setSaveError(null);
     try {
       const data = await adminFetch<{
         settings: SiteSettings;
         hasResendKey?: boolean;
       }>("/api/admin/settings", {
         method: "PUT",
-        body: JSON.stringify(settings),
+        body: JSON.stringify(payload),
       });
-      setSettings(data.settings);
+      setSettings(normalizeClientSettings(data.settings));
       if (typeof data.hasResendKey === "boolean") {
         setHasResendKey(data.hasResendKey);
       } else {
@@ -59,9 +75,44 @@ export default function SettingsView() {
           Boolean(data.settings.resendApiKey) || hasResendKey,
         );
       }
-      setSaved(true);
+      setDirty(false);
+      return normalizeClientSettings(data.settings);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Could not save settings.";
+      setSaveError(message);
+      throw error;
     } finally {
       setSaving(false);
+    }
+  }
+
+  function patchSettings(patch: Partial<SiteSettings>) {
+    setSettings((current) =>
+      current
+        ? normalizeClientSettings({ ...current, ...patch })
+        : current,
+    );
+    setDirty(true);
+    setTestNotifyMessage(null);
+    setSaveError(null);
+  }
+
+  async function persistNotifyEmails(nextEmails: string[]) {
+    if (!settings) return;
+    const next = normalizeClientSettings({
+      ...settings,
+      registrationNotifyEmails: nextEmails,
+    });
+    // Optimistic UI, then write through to SQLite via settings API.
+    setSettings(next);
+    setDirty(true);
+    setNotifyError(null);
+    setTestNotifyMessage(null);
+    try {
+      await save(next);
+    } catch {
+      // save() already recorded saveError; keep optimistic list so user can retry Save.
     }
   }
 
@@ -73,30 +124,19 @@ export default function SettingsView() {
       setNotifyError("Enter a valid email address.");
       return;
     }
-    if (settings.registrationNotifyEmails.includes(value)) {
+    const current = settings.registrationNotifyEmails ?? [];
+    if (current.includes(value)) {
       setNotifyError("That email is already on the list.");
       return;
     }
-    setSettings({
-      ...settings,
-      registrationNotifyEmails: [...settings.registrationNotifyEmails, value],
-    });
     setNotifyDraft("");
-    setNotifyError(null);
-    setSaved(false);
-    setTestNotifyMessage(null);
+    void persistNotifyEmails([...current, value]);
   }
 
   function removeNotifyEmail(email: string) {
     if (!settings) return;
-    setSettings({
-      ...settings,
-      registrationNotifyEmails: settings.registrationNotifyEmails.filter(
-        (item) => item !== email,
-      ),
-    });
-    setSaved(false);
-    setTestNotifyMessage(null);
+    const current = settings.registrationNotifyEmails ?? [];
+    void persistNotifyEmails(current.filter((item) => item !== email));
   }
 
   function includeContactEmail() {
@@ -115,20 +155,33 @@ export default function SettingsView() {
     setTestNotifyMessage(null);
     setNotifyError(null);
     try {
+      const savedSettings =
+        (await save(
+          normalizeClientSettings({
+            ...settings,
+            registrationNotifyEmails: settings.registrationNotifyEmails ?? [],
+          }),
+        )) ?? settings;
       const data = await adminFetch<{
         ok: boolean;
         recipients?: string[];
+        failed?: string[];
         error?: string;
       }>("/api/admin/settings/test-registration-notify", {
         method: "POST",
         body: JSON.stringify({
-          emails: settings.registrationNotifyEmails,
+          emails: savedSettings.registrationNotifyEmails ?? [],
         }),
       });
+      if (!data.ok) {
+        setTestNotifyMessage(data.error || "Could not send test email.");
+        return;
+      }
+      const failed = data.failed?.length
+        ? ` Failed: ${data.failed.join(", ")}.`
+        : "";
       setTestNotifyMessage(
-        data.ok
-          ? `Test sent to ${data.recipients?.join(", ") ?? "recipients"}.`
-          : data.error || "Could not send test email.",
+        `Saved & test sent to ${data.recipients?.join(", ") ?? "recipients"}.${failed}`,
       );
     } catch (error) {
       setTestNotifyMessage(
@@ -141,17 +194,24 @@ export default function SettingsView() {
 
   if (!settings) return <p className={ui.loading}>Loading settings…</p>;
 
+  const notifyEmails = settings.registrationNotifyEmails ?? [];
+
   return (
     <div className={ui.stack}>
       <AdminPageHeader
         title="Site settings"
         description="Brand, SEO meta, Google tags, Resend and other keys used by the live site."
         action={
-          <PrimaryButton disabled={saving} onClick={() => void save()}>
-            {saving ? "Saving…" : saved ? "Saved" : "Save"}
+          <PrimaryButton
+            disabled={saving || !settings}
+            onClick={() => void save().catch(() => undefined)}
+          >
+            {saving ? "Saving…" : dirty ? "Save" : "Saved"}
           </PrimaryButton>
         }
       />
+
+      {saveError ? <p className={ui.formError}>{saveError}</p> : null}
 
       <div className={ui.filters}>
         {TABS.map((item) => (
@@ -174,7 +234,7 @@ export default function SettingsView() {
                 <input
                   value={settings.brandName}
                   onChange={(e) =>
-                    setSettings({ ...settings, brandName: e.target.value })
+                    patchSettings({ brandName: e.target.value })
                   }
                 />
               </Field>
@@ -182,7 +242,7 @@ export default function SettingsView() {
                 <input
                   value={settings.domain}
                   onChange={(e) =>
-                    setSettings({ ...settings, domain: e.target.value })
+                    patchSettings({ domain: e.target.value })
                   }
                 />
               </Field>
@@ -192,9 +252,7 @@ export default function SettingsView() {
                   min={0}
                   value={settings.joinCountBase}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      joinCountBase: Number(e.target.value) || 0,
+                    patchSettings({ joinCountBase: Number(e.target.value) || 0,
                     })
                   }
                 />
@@ -209,7 +267,7 @@ export default function SettingsView() {
                   type="email"
                   value={settings.email}
                   onChange={(e) =>
-                    setSettings({ ...settings, email: e.target.value.trim() })
+                    patchSettings({ email: e.target.value.trim() })
                   }
                   placeholder="info@neighbrville.com"
                   autoComplete="off"
@@ -229,7 +287,7 @@ export default function SettingsView() {
                 <input
                   value={settings.socialInstagram}
                   onChange={(e) =>
-                    setSettings({ ...settings, socialInstagram: e.target.value })
+                    patchSettings({ socialInstagram: e.target.value })
                   }
                 />
               </Field>
@@ -237,7 +295,7 @@ export default function SettingsView() {
                 <input
                   value={settings.socialFacebook}
                   onChange={(e) =>
-                    setSettings({ ...settings, socialFacebook: e.target.value })
+                    patchSettings({ socialFacebook: e.target.value })
                   }
                 />
               </Field>
@@ -245,7 +303,7 @@ export default function SettingsView() {
                 <input
                   value={settings.socialTiktok}
                   onChange={(e) =>
-                    setSettings({ ...settings, socialTiktok: e.target.value })
+                    patchSettings({ socialTiktok: e.target.value })
                   }
                 />
               </Field>
@@ -253,7 +311,7 @@ export default function SettingsView() {
                 <input
                   value={settings.socialLinkedin}
                   onChange={(e) =>
-                    setSettings({ ...settings, socialLinkedin: e.target.value })
+                    patchSettings({ socialLinkedin: e.target.value })
                   }
                 />
               </Field>
@@ -269,7 +327,7 @@ export default function SettingsView() {
               <input
                 value={settings.metaTitle}
                 onChange={(e) =>
-                  setSettings({ ...settings, metaTitle: e.target.value })
+                  patchSettings({ metaTitle: e.target.value })
                 }
               />
             </Field>
@@ -277,7 +335,7 @@ export default function SettingsView() {
               <textarea
                 value={settings.metaDescription}
                 onChange={(e) =>
-                  setSettings({ ...settings, metaDescription: e.target.value })
+                  patchSettings({ metaDescription: e.target.value })
                 }
               />
             </Field>
@@ -285,7 +343,7 @@ export default function SettingsView() {
               <input
                 value={settings.ogImage}
                 onChange={(e) =>
-                  setSettings({ ...settings, ogImage: e.target.value })
+                  patchSettings({ ogImage: e.target.value })
                 }
                 placeholder="/opengraph-image"
               />
@@ -294,7 +352,7 @@ export default function SettingsView() {
               <input
                 value={settings.twitterHandle}
                 onChange={(e) =>
-                  setSettings({ ...settings, twitterHandle: e.target.value })
+                  patchSettings({ twitterHandle: e.target.value })
                 }
                 placeholder="@neighbrville"
               />
@@ -307,9 +365,7 @@ export default function SettingsView() {
                 <input
                   value={settings.googleSiteVerification}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      googleSiteVerification: e.target.value,
+                    patchSettings({ googleSiteVerification: e.target.value,
                     })
                   }
                   placeholder="content value from google-site-verification meta"
@@ -319,9 +375,7 @@ export default function SettingsView() {
                 <input
                   value={settings.bingSiteVerification}
                   onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      bingSiteVerification: e.target.value,
+                    patchSettings({ bingSiteVerification: e.target.value,
                     })
                   }
                   placeholder="msvalidate.01 content value"
@@ -339,7 +393,7 @@ export default function SettingsView() {
               <input
                 value={settings.gtmId}
                 onChange={(e) =>
-                  setSettings({ ...settings, gtmId: e.target.value })
+                  patchSettings({ gtmId: e.target.value })
                 }
                 placeholder="GTM-XXXXXXX"
               />
@@ -348,7 +402,7 @@ export default function SettingsView() {
               <input
                 value={settings.gaId}
                 onChange={(e) =>
-                  setSettings({ ...settings, gaId: e.target.value })
+                  patchSettings({ gaId: e.target.value })
                 }
                 placeholder="G-XXXXXXXX"
               />
@@ -357,7 +411,7 @@ export default function SettingsView() {
               <input
                 value={settings.googleAdsId}
                 onChange={(e) =>
-                  setSettings({ ...settings, googleAdsId: e.target.value })
+                  patchSettings({ googleAdsId: e.target.value })
                 }
                 placeholder="AW-XXXXXXXX"
               />
@@ -377,7 +431,7 @@ export default function SettingsView() {
               <input
                 value={settings.resendApiKey}
                 onChange={(e) =>
-                  setSettings({ ...settings, resendApiKey: e.target.value })
+                  patchSettings({ resendApiKey: e.target.value })
                 }
                 placeholder="re_… or leave masked"
                 autoComplete="off"
@@ -387,7 +441,7 @@ export default function SettingsView() {
               <input
                 value={settings.resendFrom}
                 onChange={(e) =>
-                  setSettings({ ...settings, resendFrom: e.target.value })
+                  patchSettings({ resendFrom: e.target.value })
                 }
                 placeholder="NeighbrVille <info@neighbrville.com>"
               />
@@ -408,17 +462,22 @@ export default function SettingsView() {
         >
           <p className={ui.statHint} style={{ marginBottom: 14 }}>
             Add the corporate inbox, owner email, and any ops aliases. Leave the
-            list empty to disable alerts. Save before relying on a new list in
-            production; the test button uses the emails currently shown here.
+            list empty to disable alerts. Adding or removing an email saves to
+            the database immediately.
             {" "}
-            Resend: {hasResendKey ? "API key ready" : "API key missing — set it under Integrations or in .env"}.
+            Resend:{" "}
+            {hasResendKey
+              ? "API key ready"
+              : "API key missing — set it under Integrations or in .env"}
+            .
+            {saving ? " Saving…" : ""}
           </p>
 
           <div className={ui.emailChipList} aria-live="polite">
-            {settings.registrationNotifyEmails.length === 0 ? (
+            {notifyEmails.length === 0 ? (
               <p className={ui.emptyInline}>No notification emails yet.</p>
             ) : (
-              settings.registrationNotifyEmails.map((email) => (
+              notifyEmails.map((email) => (
                 <span key={email} className={ui.emailChip}>
                   {email}
                   <button
@@ -426,6 +485,7 @@ export default function SettingsView() {
                     className={ui.emailChipRemove}
                     aria-label={`Remove ${email}`}
                     onClick={() => removeNotifyEmail(email)}
+                    disabled={saving}
                   >
                     ×
                   </button>
@@ -455,8 +515,9 @@ export default function SettingsView() {
               type="button"
               className={ui.ghostBtn}
               onClick={() => addNotifyEmail()}
+              disabled={saving}
             >
-              Add
+              {saving ? "Saving…" : "Add"}
             </button>
           </div>
 
@@ -467,15 +528,14 @@ export default function SettingsView() {
               type="button"
               className={ui.ghostBtn}
               onClick={includeContactEmail}
+              disabled={saving}
             >
               Include contact email
             </button>
             <button
               type="button"
               className={ui.ghostBtn}
-              disabled={
-                testingNotify || settings.registrationNotifyEmails.length === 0
-              }
+              disabled={testingNotify || saving || notifyEmails.length === 0}
               onClick={() => void sendTestNotify()}
             >
               {testingNotify ? "Sending test…" : "Send test email"}

@@ -103,11 +103,20 @@ export async function POST(request: Request) {
     }
     if (notifyResult.status === "rejected") {
       console.error("[registration-notify]", notifyResult.reason);
-    } else if (
-      notifyResult.status === "fulfilled" &&
-      !notifyResult.value.ok
-    ) {
-      console.error("[registration-notify]", notifyResult.value.reason);
+    } else if (notifyResult.status === "fulfilled") {
+      if (!notifyResult.value.ok) {
+        console.error("[registration-notify]", notifyResult.value.reason);
+      } else if (notifyResult.value.failed?.length) {
+        console.error(
+          "[registration-notify] partial failure",
+          notifyResult.value.failed.map((item) => item.email).join(", "),
+        );
+      } else {
+        console.info(
+          "[registration-notify] sent to",
+          notifyResult.value.recipients.join(", "),
+        );
+      }
     }
   }
 

@@ -1,4 +1,7 @@
-import { getSiteSettings } from "@/lib/admin/settings";
+import {
+  getSiteSettings,
+  resolveRegistrationNotifyEmails,
+} from "@/lib/admin/settings";
 import { sendResendEmail } from "@/lib/email/resend-client";
 import type { JoinRole } from "@/lib/join";
 import type { RegistrationProfile } from "@/lib/join-registration-types";
@@ -159,7 +162,7 @@ export async function sendRegistrationNotifyEmail(
 ) {
   const settings = getSiteSettings();
   const recipients = (
-    recipientsOverride ?? settings.registrationNotifyEmails
+    recipientsOverride ?? resolveRegistrationNotifyEmails()
   )
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
@@ -172,28 +175,74 @@ export async function sendRegistrationNotifyEmail(
     ? `[Test] New registration — ${payload.name}`
     : `New registration — ${payload.name} (${roleLabel(payload.role)})`;
 
-  const result = await sendResendEmail({
-    to: recipients,
-    subject,
-    html: buildRegistrationNotifyHtml(payload),
-    text: buildRegistrationNotifyText(payload),
-    replyTo: payload.isTest ? settings.email || siteConfig.email : payload.email,
-  });
+  const contactEmail = settings.email || siteConfig.email;
+  // Keep Reply-To on a verified inbox — registrant address is already in the body.
+  // One bad Reply-To / shared To-batch previously bounced the whole alert.
+  const replyTo = contactEmail;
+  const html = buildRegistrationNotifyHtml(payload);
+  const text = buildRegistrationNotifyText(payload);
 
-  if (!result.ok) {
-    if (result.reason === "missing_api_key") {
-      if (process.env.NODE_ENV === "development") {
-        console.info(
-          "[registration-notify] RESEND_API_KEY missing. Would notify:",
-          recipients.join(", "),
-          payload.email,
-        );
-      }
-      return { ok: false as const, reason: "missing_api_key" as const };
+  // Send separately so one invalid recipient cannot bounce the whole list.
+  const delivered: string[] = [];
+  const failed: Array<{ email: string; error: unknown }> = [];
+  let missingKey = false;
+
+  const results = await Promise.all(
+    recipients.map(async (email) => {
+      const result = await sendResendEmail({
+        to: email,
+        subject,
+        html,
+        text,
+        replyTo,
+      });
+      return { email, result };
+    }),
+  );
+
+  for (const { email, result } of results) {
+    if (result.ok) {
+      delivered.push(email);
+      continue;
     }
-    console.error("[registration-notify]", result.error);
-    return { ok: false as const, reason: "send_failed" as const };
+    if (result.reason === "missing_api_key") {
+      missingKey = true;
+      break;
+    }
+    failed.push({ email, error: result.error });
+    console.error("[registration-notify]", email, result.error);
   }
 
-  return { ok: true as const, recipients };
+  if (missingKey) {
+    if (process.env.NODE_ENV === "development") {
+      console.info(
+        "[registration-notify] RESEND_API_KEY missing. Would notify:",
+        recipients.join(", "),
+        payload.email,
+      );
+    }
+    return { ok: false as const, reason: "missing_api_key" as const };
+  }
+
+  if (delivered.length === 0) {
+    return {
+      ok: false as const,
+      reason: "send_failed" as const,
+      recipients: delivered,
+      failed,
+    };
+  }
+
+  if (failed.length > 0) {
+    console.error(
+      "[registration-notify] partial failure",
+      failed.map((item) => item.email).join(", "),
+    );
+  }
+
+  return {
+    ok: true as const,
+    recipients: delivered,
+    failed,
+  };
 }

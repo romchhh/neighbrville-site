@@ -48,14 +48,20 @@ export async function POST(request: Request) {
   );
 
   if (!result.ok) {
+    const failed =
+      "failed" in result && result.failed
+        ? result.failed.map((item) => item.email)
+        : undefined;
     const message =
       result.reason === "missing_api_key"
         ? "Resend API key is missing. Add it under Integrations."
         : result.reason === "no_recipients"
           ? "Add at least one notification email before sending a test."
-          : "Could not send the test email. Check Resend settings and try again.";
+          : failed?.length
+            ? `Could not send the test email to: ${failed.join(", ")}. Check Resend settings and try again.`
+            : "Could not send the test email. Check Resend settings and try again.";
     return NextResponse.json(
-      { ok: false, error: message, reason: result.reason },
+      { ok: false, error: message, reason: result.reason, failed },
       { status: 400 },
     );
   }
@@ -63,5 +69,6 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ok: true,
     recipients: result.recipients,
+    failed: result.failed?.map((item) => item.email) ?? [],
   });
 }

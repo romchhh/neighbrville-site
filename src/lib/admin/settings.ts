@@ -163,6 +163,23 @@ export function resolveResendConfig() {
   };
 }
 
+/**
+ * Recipients for new-registration alerts.
+ * Admin DB list wins; otherwise REGISTRATION_NOTIFY_EMAILS; otherwise contact email.
+ */
+export function resolveRegistrationNotifyEmails() {
+  const settings = getSiteSettings();
+  const fromDb = normalizeNotifyEmails(settings.registrationNotifyEmails);
+  if (fromDb.length > 0) return fromDb;
+
+  const fromEnv = normalizeNotifyEmails(
+    process.env.REGISTRATION_NOTIFY_EMAILS || "",
+  );
+  if (fromEnv.length > 0) return fromEnv;
+
+  return normalizeNotifyEmails(settings.email || siteConfig.email);
+}
+
 export function publicSettingsMask(settings: SiteSettings) {
   return {
     ...settings,
