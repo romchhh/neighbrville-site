@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { isValidEmail } from "@/lib/join";
 import { siteConfig } from "@/lib/site";
 
 export type SiteSettings = {
@@ -21,6 +22,8 @@ export type SiteSettings = {
   resendApiKey: string;
   resendFrom: string;
   joinCountBase: number;
+  /** Inboxes that get an alert when someone finishes waitlist signup. */
+  registrationNotifyEmails: string[];
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
@@ -43,18 +46,52 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   resendApiKey: "",
   resendFrom: "",
   joinCountBase: 0,
+  registrationNotifyEmails: [siteConfig.email],
 };
+
+/** Normalize a free-form list (array, CSV, or newlines) into unique valid emails. */
+export function normalizeNotifyEmails(value: unknown): string[] {
+  const parts: string[] = [];
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      if (typeof item === "string") parts.push(item);
+    }
+  } else if (typeof value === "string") {
+    parts.push(...value.split(/[\n,;]+/));
+  }
+
+  const unique = new Set<string>();
+  for (const part of parts) {
+    const email = part.trim().toLowerCase();
+    if (isValidEmail(email)) unique.add(email);
+  }
+  return [...unique];
+}
 
 function mergeSettings(raw: Partial<SiteSettings> | null): SiteSettings {
   const merged = {
     ...DEFAULT_SETTINGS,
     ...(raw ?? {}),
   };
+  const contactEmail = String(merged.email ?? DEFAULT_SETTINGS.email).trim();
+
+  // Older DB rows omit the key — seed with the public contact email once.
+  const notifyRaw =
+    raw && Object.prototype.hasOwnProperty.call(raw, "registrationNotifyEmails")
+      ? raw.registrationNotifyEmails
+      : undefined;
+  const registrationNotifyEmails =
+    notifyRaw === undefined
+      ? normalizeNotifyEmails(
+          contactEmail || DEFAULT_SETTINGS.registrationNotifyEmails,
+        )
+      : normalizeNotifyEmails(notifyRaw);
 
   return {
     brandName: String(merged.brandName ?? DEFAULT_SETTINGS.brandName),
     domain: String(merged.domain ?? DEFAULT_SETTINGS.domain),
-    email: String(merged.email ?? DEFAULT_SETTINGS.email),
+    email: contactEmail,
     metaTitle: String(merged.metaTitle ?? DEFAULT_SETTINGS.metaTitle),
     metaDescription: String(
       merged.metaDescription ?? DEFAULT_SETTINGS.metaDescription,
@@ -83,6 +120,7 @@ function mergeSettings(raw: Partial<SiteSettings> | null): SiteSettings {
     resendApiKey: String(merged.resendApiKey ?? DEFAULT_SETTINGS.resendApiKey),
     resendFrom: String(merged.resendFrom ?? DEFAULT_SETTINGS.resendFrom),
     joinCountBase: Number(merged.joinCountBase ?? DEFAULT_SETTINGS.joinCountBase) || 0,
+    registrationNotifyEmails,
   };
 }
 

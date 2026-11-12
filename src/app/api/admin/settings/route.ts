@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/admin/session";
 import {
   applySecretUpdate,
   getSiteSettings,
+  normalizeNotifyEmails,
   publicSettingsMask,
   saveSiteSettings,
   type SiteSettings,
@@ -57,12 +58,16 @@ export async function PUT(request: Request) {
     googleAdsId: String(body.googleAdsId ?? current.googleAdsId).trim(),
     resendFrom: String(body.resendFrom ?? current.resendFrom),
     joinCountBase: Number(body.joinCountBase ?? current.joinCountBase) || 0,
+    registrationNotifyEmails: normalizeNotifyEmails(
+      body.registrationNotifyEmails ?? current.registrationNotifyEmails,
+    ),
     resendApiKey: applySecretUpdate(current.resendApiKey, body.resendApiKey),
   };
 
   const saved = saveSiteSettings(next);
   return NextResponse.json({
     settings: publicSettingsMask(saved),
+    hasResendKey: Boolean(saved.resendApiKey || process.env.RESEND_API_KEY),
     ok: true,
   });
 }

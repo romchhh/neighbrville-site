@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { recordAnalyticsEvent } from "@/lib/admin/analytics";
 import { sendJoinConfirmationEmail } from "@/lib/email/join-confirmation";
+import { sendRegistrationNotifyEmail } from "@/lib/email/registration-notify";
 import {
   completeProfile,
   findRegistrationByEmail,
@@ -46,10 +47,11 @@ export async function POST(request: Request) {
   }
 
   const email = normalizeEmail(String(payload.email ?? ""));
+  const profile = parseProfile(payload);
   const result = completeProfile({
     email,
     role,
-    profile: parseProfile(payload),
+    profile,
   });
 
   if (!result.ok) {
@@ -76,13 +78,37 @@ export async function POST(request: Request) {
       meta: { email: registration.email },
     });
 
-    const sendResult = await sendJoinConfirmationEmail({
-      to: registration.email,
-      name: registration.name,
-      role: registration.role,
-      editToken: result.editToken,
-    });
-    emailSent = sendResult.ok;
+    // Confirmation + owner alerts in parallel so one slow inbox doesn't block the other.
+    const [sendResult, notifyResult] = await Promise.allSettled([
+      sendJoinConfirmationEmail({
+        to: registration.email,
+        name: registration.name,
+        role: registration.role,
+        editToken: result.editToken,
+      }),
+      sendRegistrationNotifyEmail({
+        name: registration.name,
+        email: registration.email,
+        role: registration.role,
+        profile,
+        createdAt: registration.created_at,
+      }),
+    ]);
+
+    emailSent =
+      sendResult.status === "fulfilled" ? sendResult.value.ok : false;
+
+    if (sendResult.status === "rejected") {
+      console.error("[join-email]", sendResult.reason);
+    }
+    if (notifyResult.status === "rejected") {
+      console.error("[registration-notify]", notifyResult.reason);
+    } else if (
+      notifyResult.status === "fulfilled" &&
+      !notifyResult.value.ok
+    ) {
+      console.error("[registration-notify]", notifyResult.value.reason);
+    }
   }
 
   return NextResponse.json({

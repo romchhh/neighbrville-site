@@ -1,17 +1,11 @@
-import { Resend } from "resend";
-
-import { getSiteSettings, resolveResendConfig } from "@/lib/admin/settings";
+import { getSiteSettings } from "@/lib/admin/settings";
+import { sendResendEmail } from "@/lib/email/resend-client";
 import { absoluteUrl, siteConfig } from "@/lib/site";
 import type { JoinRole } from "@/lib/join";
 
 const CHOCOLATE = "#2f1b0e";
 const CREAM = "#f7d5ac";
 const IVORY = "#fbf6ec";
-
-function getResend(apiKey: string) {
-  if (!apiKey) return null;
-  return new Resend(apiKey);
-}
 
 function copyForRole(role: JoinRole) {
   if (role === "partner") {
@@ -288,24 +282,10 @@ export async function sendJoinConfirmationEmail(options: {
   role: JoinRole;
   editToken: string;
 }) {
-  const { apiKey, from } = resolveResendConfig();
-  const resend = getResend(apiKey);
   const editUrl = absoluteUrl(`/join/edit/${options.editToken}`);
   const confirmUrl = absoluteUrl(`/join/confirm/${options.editToken}`);
   const contactEmail = getSiteSettings().email || siteConfig.email;
   const copy = copyForRole(options.role);
-
-  if (!resend) {
-    if (process.env.NODE_ENV === "development") {
-      console.info(
-        "[join-email] RESEND_API_KEY missing. Confirm URL:",
-        confirmUrl,
-        "Edit URL:",
-        editUrl,
-      );
-    }
-    return { ok: false as const, reason: "missing_api_key" as const };
-  }
 
   const payload = {
     name: options.name,
@@ -315,8 +295,7 @@ export async function sendJoinConfirmationEmail(options: {
     contactEmail,
   };
 
-  const { error } = await resend.emails.send({
-    from,
+  const result = await sendResendEmail({
     to: options.to,
     subject: copy.subject,
     html: buildJoinConfirmationHtml(payload),
@@ -324,8 +303,19 @@ export async function sendJoinConfirmationEmail(options: {
     replyTo: contactEmail,
   });
 
-  if (error) {
-    console.error("[join-email]", error);
+  if (!result.ok) {
+    if (result.reason === "missing_api_key") {
+      if (process.env.NODE_ENV === "development") {
+        console.info(
+          "[join-email] RESEND_API_KEY missing. Confirm URL:",
+          confirmUrl,
+          "Edit URL:",
+          editUrl,
+        );
+      }
+      return { ok: false as const, reason: "missing_api_key" as const };
+    }
+    console.error("[join-email]", result.error);
     return { ok: false as const, reason: "send_failed" as const };
   }
 

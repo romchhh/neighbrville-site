@@ -1,14 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Native addon — keep out of the bundler so builds stay reliable.
-  serverExternalPackages: ["better-sqlite3"],
+  // Keep native / Node SDKs out of the Turbopack graph so fetch & FS stay stable.
+  serverExternalPackages: ["better-sqlite3", "resend"],
   poweredByHeader: false,
   compress: true,
-  // Faster installs / leaner client chunks for known packages.
-  experimental: {
-    optimizePackageImports: ["resend"],
-  },
   images: {
     formats: ["image/avif", "image/webp"],
     // Display sizes on this site are modest (polaroids ~240–312px,
